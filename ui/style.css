@@ -1,0 +1,240 @@
+/* C R Y T C H */
+/* Encrypt a Sketch at crytch.com */
+/* Concept by Leon Plum & Mori Waan */
+/* Code by Mori Waan, Typeface by Leon Plum */
+/* 2016 Bauhaus University Weimar, Germany */
+
+
+* {margin:0; padding:0; border:0; font-weight:normal; list-style:none;}
+
+body, input, textarea {font-family:"Roboto Mono"; text-rendering: optimizeLegibility !important; -webkit-font-smoothing: antialiased !important;}
+body,h1,h2,h3,h4,h5,h6,input {font-size:13px; font-weight:normal; font-style:normal;}
+h1,h1 span {font-weight:500;}
+em,.zerballert,strong,b,i {font-weight:800; font-style:normal;}
+
+h1,h2,h3,h4 {font-size:18px;}
+
+span {font-size:inherit; font-weight:inherit; font-style:inherit;}
+
+#settings {display:none;}
+#openmessage {display:none;}
+
+.center {text-align:center;}
+.tale {text-align:left;}
+.tari {text-align:right;}
+.flle {float:left;}
+.flri {float:right;}
+.clear {clear:both;}
+
+.addmargin {margin-bottom:10px;}
+li.noborders {border-bottom-width:0;}
+
+canvas#message {position:fixed; width:100%; height:100%; z-index:0; top:0; left:0;}
+
+a,button,.button {cursor:pointer;}
+a,a:link,a:visited,a:hover,a:active,.button,button {text-decoration:none;}
+p a:hover {text-decoration:underline;}
+.inactive {cursor:default;}
+
+menu,a.button,ul,li { -webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
+p,input,h2,h4,textarea { -webkit-touch-callout:text; -webkit-user-select:text; -khtml-user-select:text; -moz-user-select:text; -ms-user-select:text; user-select:text; }
+::selection {background-color:#00f; color:#fff;}
+
+/* no borders <3 */
+a.button {border-width:2px; display:inline-block;}
+
+#popups {display:none;}
+#popups, #popups .bg {z-index:100; position:fixed; top:0; left:0; width:100%; height:100%;}
+#popups ul {display:none; position:fixed; z-index:101; top:30%; left:50%; width:400px; max-width:90%; border-width:2px; margin-left:-200px;}
+#popups ul li {padding:4px 10px 5px 10px; border-width:0;}
+#popups ul li.userresponse {border-top-width:2px;}
+
+menu,menu h1,ul,li,.button,input,textarea,a {border-style:solid;}
+
+
+
+
+
+
+.corner {position:absolute; z-index:9; padding:10px; display:-webkit-box; display:-moz-box; display:-ms-flexbox; display:-webkit-flex; display:flex;}
+.corner.tl {top:5px; left:5px; z-index:10;}
+.corner.tr {top:5px; right:5px;}
+.corner.bl {bottom:5px; left:5px;}
+.corner.br {bottom:5px; right:5px;}
+
+menu#about .panel {z-index:13;}
+menu#help .panel {z-index:12;}
+menu#publickeys .panel {z-index:11;}
+menu#send.open a.button.active:hover {cursor:default;}
+
+menu {display:inline-block; margin:10px; position:relative;}
+menu a.button {display:inline-block; padding:4px 10px 5px 10px; border-width:2px;}
+menu.join a.button:last-child {border-left-width:0;}
+menu .panel {display:none; width:380px;}
+menu.open .panel {display:block; position:absolute;}
+.tl menu.open .panel, .tl menu.hover .panel {display:block; position:absolute; top:0; left:0;}
+.br menu.open .panel {bottom:40px; right:0;}
+
+menu h1 {margin-bottom:10px; cursor:pointer;}
+menu ul li {padding:10px 10px 11px 10px; border-width:2px; border-top-width:0;}
+menu ul li.grey, menu ul a li {padding:4px 10px 5px 10px;}
+menu ul > li:first-child {border-top-width:2px;}
+menu ul label:first-child > li:first-child {border-top-width:2px;}
+menu ul a:first-child > li:first-child {border-top-width:2px;}
+menu ul li.input {padding:0;}
+menu ul li.input input, menu ul li.input textarea {width:100%; display:block; padding:4px 10px 5px 10px; box-sizing:border-box; resize:none;}
+
+menu i.closemenu {position:absolute; font-weight:normal; display:block; top:5px; right:15px; padding:5px; z-index:20; cursor:pointer; font-size:18px;}
+
+/* Theme White */
+body, input, textarea {background-color:#fff; color:#000;}
+menu ul, menu .button {background-color:#fff; color:#000;}
+a,a:link,a:visited,a:hover,a:active {color:#000;}
+.grey,.inactive,input.grey {color:#bbb;}
+.grey a,.grey a:link, .grey a:visited {color:#bbb;}
+.grey a:hover,.grey a:active {color:#000;}
+li.grey {border-color:#bbb;}
+a.inactive,.inactive a,.inactive a:link, .inactive a:visited, .inactive a:hover,.inactive a:active {color:#bbb;}
+a.button, a li {border-color:#000;}
+a:hover li, a li:hover {border-color:#000; color:#fff;}
+a.button:hover,a.button.active, a li:hover {background-color:#000; color:#fff;}
+a.button.inactive, .inactive a.button, a.inactive li {border-color:#bbb; cursor:default;}
+a.button.inactive:hover, .inactive a.button:hover, a.button.inactive.active, a.inactive li {background-color:#fff; color:#bbb; cursor:default;}
+a.button.grey, .grey a.button {border-color:#bbb;}
+a.button.grey:hover, .grey a.button:hover, a.button.grey.active {background-color:#bbb; color:#fff;}
+menu ul li {border-color:#000;}
+menu#send ul li:last-child {border-color:#000 !important;}
+#popups ul li.userresponse {border-color:#000;}
+#popups .bg {background-color:rgba(255,255,255,0.7);}
+#popups ul {border-color:#000; background-color:#fff;}
+/* Theme Black */
+body.bl body, body.bl input, body.bl textarea {background-color:#000; color:#fff;}
+body.bl menu ul, body.bl menu .button {background-color:#000; color:#fff;}
+body.bl a,body.bl a:link,body.bl a:visited,body.bl a:hover,body.bl a:active {color:#fff;}
+body.bl .grey,body.bl .inactive,body.bl input.grey {color:#555;}
+body.bl .grey a,body.bl .grey a:link, body.bl .grey a:visited {color:#555;}
+body.bl .grey a:hover,body.bl .grey a:active {color:#fff;}
+body.bl li.grey {border-color:#555;}
+body.bl a.inactive,body.bl .inactive a,body.bl .inactive a:link, body.bl .inactive a:visited, body.bl .inactive a:hover,body.bl .inactive a:active {color:#555;}
+body.bl a.button, body.bl a li {border-color:#fff;}
+body.bl a:hover li, body.bl a li:hover {border-color:#fff; color:#000;}
+body.bl a.button:hover,body.bl a.button.active, body.bl a li:hover {background-color:#fff; color:#000;}
+body.bl a.button.inactive, body.bl .inactive a.button, body.bl a.inactive li {border-color:#555; cursor:default;}
+body.bl a.button.inactive:hover, body.bl .inactive a.button:hover, body.bl a.button.inactive.active, body.bl a.inactive li {background-color:#000; color:#555; cursor:default;}
+body.bl a.button.grey, body.bl .grey a.button {border-color:#555;}
+body.bl a.button.grey:hover, body.bl .grey a.button:hover, body.bl a.button.grey.active {background-color:#555; color:#000;}
+body.bl menu ul li {border-color:#fff;}
+body.bl menu#send ul li:last-child {border-color:#fff !important;}
+body.bl #popups ul li {color:#fff;}
+body.bl #popups ul li.userresponse {border-color:#fff;}
+body.bl #popups .bg {background-color:rgba(0,0,0,0.8);}
+body.bl #popups ul {border-color:#fff; background-color:#000;}
+
+
+.style .c000:hover {color:#000 !important;}
+.style .cfff:hover {color:#fff !important;}
+.style .cf00:hover {color:#f00 !important;}
+.style .c00f:hover {color:#00f !important;}
+
+
+menu#publickeys .leak a.button {margin-left:20px;}
+.leak .yes {display:inline-block;}
+.leak .nope {display:none;}
+body.c4secrets .leak .yes {display:none;}
+body.c4secrets .leak .nope {display:inline-block;}
+body.c4secrets menu#about .settings .style {display:none;}
+.attention {background-color:#f00;}
+body.c4secrets .attention {background-color:#0f0; color:#000;}
+
+
+
+
+
+
+
+
+
+
+
+body.page {font-size:13px; line-height:1.5;}
+body.page .wrapper {width:100%; max-width:900px; margin:50px auto 100px auto;}
+
+body.page section {margin:30px 0;}
+body.page footer {margin-top:100px;}
+
+body.page .text {margin:0 50px;}
+body.page .text.center {text-align:center; margin:0 70px;}
+
+body.page h1 {font-size:30px; margin-bottom:4px;}
+body.page h1 a {border-bottom:2px solid #bbb;}
+body.page h1 a:hover {border-bottom:2px solid #000;}
+body.page.about h2, body.page.about h4 {margin-bottom:24px;}
+body.page p {-webkit-hyphens:auto; word-spacing:-1px;}
+
+span.break, p.break {display:block;}
+
+body.page section p {font-size:18px; text-indent:50px; word-spacing:-3px;}
+body.page section p:first-child {text-indent:0;}
+
+body.page figure {margin:50px 10px; border:1px solid #bbb;}
+body.page figure img {padding:0px; display:block;}
+body.page figure figcaption {padding:5px 10px 5px 10px; border-top:1px solid #bbb;}
+
+body.page article {border-bottom:1px solid #bbb; padding:50px;}
+body.page article:last-child {border-bottom:none;}
+body.page article time {color:#bbb; font-size:13px;}
+body.page article .text {margin:24px 0;}
+body.page article figure {margin:0;}
+body.page article img {text-align:center; margin:0 auto;}
+
+section.list table td {margin:3px 8px; padding:1px 4px;}
+section.list table tr td:last-child {padding-left:26px;
+	background-image:url(favicon/favicon-32x32.png);
+	background-size:contain;
+	background-position: left center;
+	background-repeat:no-repeat;
+}
+
+@media (max-width:1000px) {
+	menu {margin:6px;}
+}
+@media screen and (max-width:600px), screen and (max-height:500px) {
+	body.tool, body.tool menu * {font-size:12px;}
+	body.tool menu h1, body.tool menu h2, menu i.closemenu {font-size:16px;}
+	body.tool menu span {font-size:inherit;}
+
+	.corner {padding:5px;}
+	.corner.tr, .corner.tr menu {display:none;}
+	menu {margin:5px;}
+
+	body.page h1, body.page h2, body.page h3, body.page h4 {font-size:16px;}
+	body.page {font-size:12px;}
+	body.page article time {font-size:12px;}
+	body.page h1 {font-size:26px;}
+	body.page .text {margin:0 30px;}
+	body.page .text.center {margin:0 50px;}
+	body.page section p {font-size:16px; text-indent:30px;}
+	body.page.about figure {margin:28px 0px 24px 0; border-left-width:0; border-right-width:0;}
+
+	body.page article {padding:30px;}
+
+	span.break, p.break {display:inline;}
+}
+@media screen and (max-width:460px), screen and (max-height:420px) {
+	.corner.tl {width:100vw; padding:2vw; top:0; left:0; box-sizing:border-box;}
+	.corner.br {width:100vw; padding:2vw; bottom:0; left:0; box-sizing:border-box; justify-content:flex-end;}
+	menu {position:static; margin:0;}
+	.tl menu {margin-right:2vw;}
+	.br menu {margin-left:2vw;}
+	.tl menu.open .panel , .tl menu.hover .panel {display:block; margin:0; position:absolute; top:2vw; left:2vw; width:96vw;}
+	.br menu.open .panel , .br menu.hover .panel {display:block; margin:0; position:absolute; bottom:2vw; right:2vw; width:96vw;}
+
+	body.page {font-size:11px;}
+	body.page article time {font-size:11px;}
+	body.page .text {margin:0 20px;}
+	body.page .text.center {margin:0 20px;}
+	body.page section p {font-size:14px; text-indent:20px;}
+	
+	body.page article {padding:20px;}
+}
+

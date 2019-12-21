@@ -1,0 +1,6 @@
+Sitemap: https://crytch.com/sitemap
+User-agent: *
+Disallow: /m
+Disallow: /m/*
+Allow: /about
+Allow: /blog

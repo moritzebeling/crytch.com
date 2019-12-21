@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Crytch Public Keys</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="jquery-3.min.js"></script>
+	<script src="paper-full.min.js"></script>
+	<style type="text/css">
+		body,canvas#message {background-color:#000; width:100%; height:100%;}
+		canvas#message {position:fixed; z-index:0; top:0; left:0;}
+		#password {background:none; z-index:50; border:none; color:#fff; font-size:20px; width:300px; position:fixed; bottom:5px; letter-spacing:2px; left:5px;}
+	</style>
+</head>
+<body class="tool bl" style="background-color:#000;">
+
+<input id="password" type="password" maxlength="32" />
+
+<canvas id="message" resize></canvas>
+
+<script type="text/javascript" src="publickeys.js"></script>
+</body>
+</html>
