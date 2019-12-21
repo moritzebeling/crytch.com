@@ -4,8 +4,6 @@ if(!isset($config)){
 }
 
 
-
-
 $bodyclass = '';
 $leakmode = false;
 if(isset($_GET['leakmode'])){
