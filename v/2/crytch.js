@@ -410,7 +410,7 @@ function moveWithSteps(object,dir){
 		if(dir == 'right'){ object.point.x += grid.size; return true; }
 		if(dir == 'left'){ object.point.x -= grid.size; return true; }
 		if(dir == 'up'){ object.point.y -= grid.size; return true; }
-		if(dir == 'down'){ object.point.y += grid.size; return true; }	
+		if(dir == 'down'){ object.point.y += grid.size; return true; }
 	}
 	return false;
 }
@@ -540,7 +540,7 @@ function UndoEncryption(){
 	layer_text.visible = true;
 	layer_pen.visible = true;
 	layer_conserve.visible = false;
-	
+
 	view.update(true);
 	message.is_encrypted = false;
 	$('a#save').addClass('inactive');
@@ -581,7 +581,7 @@ function encrypt(key){
 	if(message.is_encrypted == false){
 		StartEncryption();
 	}
-	
+
 	layer_pen.removeChildren();
 	layer_pen = layer_conserve.clone();
 	layer_pen.activate();
@@ -734,26 +734,49 @@ function listen(){
 		else { console.log('server error'); }
 	});
 }
-var downloadDataUri = function(options) {
-	if(!options){ return; }
-	$.isPlainObject(options) || (options = {data: options});
-	options.filename || (options.filename = "download." + options.data.split(",")[0].split(";")[0].substring(5).split("/")[1]);
-	options.url || (options.url = "https://download-data-uri.appspot.com/");
-	$('<form method="post" action="'+options.url+'" style="display:none"><input type="hidden" name="filename" value="'+options.filename+'"/><input type="hidden" name="data" value="'+options.data+'"/></form>').submit().remove();
+
+
+function leadingZeros(t){
+	if (t < 10) {
+    t = '0' + t;
+  }
+  return t;
 }
-function downloadSVG(){
+function getTimeStamp() {
+	var today = new Date(),
+    month = leadingZeros( today.getMonth() + 1 ),
+    day = leadingZeros( today.getDate() ),
+    year = leadingZeros( today.getFullYear() - 2000 ),
+		h = leadingZeros( today.getHours() ),
+  	m = leadingZeros( today.getMinutes() ),
+  	s = leadingZeros( today.getSeconds() );
+  return year+month+day+'-'+h+m;
+}
+function getBlobURL(content, type) {
+	return URL.createObjectURL(new Blob([content], {
+		type: type
+	}));
+}
+function downloadSVG( event ){
+	var button = event.delegateTarget;
+
 	background = new Shape.Rectangle({
 		from: [0,0],
 		to: [blow(grid.width), blow(grid.height)],
 		fillColor: style.background
 	});
 	layer_interface.addChild(background);
+
 	var svg = project.exportSVG({ asString: true });
-	downloadDataUri({
-		data: 'data:image/svg+xml;base64,' + btoa(svg),
-		filename: 'crytch.svg'
-	});
+	var filename = 'Crytch-' + getTimeStamp() + '.svg';
+
+	console.log( 'Export '+filename );
+
+	button.href = getBlobURL(svg, 'image/svg+xml');
+	button.download = filename;
+
 	background.remove();
+
 }
 function validateEmail(email){
 	if(email== ""){ return false; }
@@ -827,7 +850,7 @@ tool_pen.onMouseDrag = function(event){
 			var samepos = true;
 		} else { var samepos = false; }
 	} else { var samepos = false; }
-	
+
 	if(!samepos){
 		path.add(point);
 		if(pen.pathlength == 1){
@@ -1021,10 +1044,10 @@ function printCharacter(char){
 	character.pivot = new Point(0,0);
 	character.position = type.cursor.position;
 	character.scale( blow(type.scale) );
-	
+
 	Cursor('move',blow( letters[char]['s']*type.scale ));
 	if(layer_text.children.length < 2){
-		canvasFilled(); 
+		canvasFilled();
 	}
 }
 
@@ -1113,7 +1136,7 @@ tool_text.onKeyDown = function(event){
 
 	if(event.character == ''){ printCharacter('C');printCharacter('R');printCharacter('Y');printCharacter('T');printCharacter('C');printCharacter('H');printCharacter('period');printCharacter('c');printCharacter('o');printCharacter('m'); }
 	// bis hier geprüft
-	
+
 	if(event.character == '×'){ printCharacter('multiply'); }
 	if(event.character == 'á'){ printCharacter('a_acute'); }
 	if(event.character == 'à'){ printCharacter('a_grave'); }
@@ -1149,7 +1172,7 @@ function Call4Secrets(leak,paint){
 
 
 // Handle I N T E R F A C E  - - - - - - - - - - - - - - - - - - - - - - - - - - -
-$('menu a').click(function(){
+$('menu a').click(function( event ){
 	var execute = $(this).attr('data-execute');
 	if(!execute){
 		var execute = $(this).parent().attr('data-execute');
@@ -1169,7 +1192,7 @@ $('menu a').click(function(){
 			switchtool('encrypt');
 		}
 	}
-	if(execute == 'export-svg'){ downloadSVG(); console.log('try to export'); }
+	if(execute == 'export-svg'){ downloadSVG( event ); }
 	if(execute == 'clearall'){ clearAll(); }
 	if(execute == 'confirm-clearall'){ popup('confirm-clear-canvas'); }
 	if(execute == 'reload'){ window.location.assign("https://crytch.com"); }
@@ -1252,7 +1275,7 @@ $('#strokewidth').bind('keyup change', function (e) {
 		}
 	}
     var width = $(this).val();
-	reStyle('strokewidth',width);        
+	reStyle('strokewidth',width);
 });
 $('#password').keyup(function() {
 	var pw = validPW();
@@ -1311,7 +1334,7 @@ if( $('body').hasClass('c4secrets') ){
 
 
 
-$(window).resize(function(){ 
+$(window).resize(function(){
 	interface.window_w = $(window).width();
 	interface.window_h = $(window).height();
 	if(interface.window_w <= 460 || interface.window_h <= 420 ){

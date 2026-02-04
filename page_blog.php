@@ -1,4 +1,5 @@
 <?php
+
 if(!isset($config)){
 	require_once('_config.php');
 }
@@ -24,18 +25,19 @@ include 'ui/header.php';
 	</header>
 	<section>
 
-<?php
+	<?php
 
-	$blogdirectory = 'blogposts/';
-	$blogentries = scandir($blogdirectory, 1);
+		$blogdirectory = 'blogposts/';
+		$blogentries = scandir($blogdirectory, 1);
 
-	foreach ($blogentries as $post) {
-		$date = str_replace('.php','',$post);
-		$date_arr = explode('-', $post);
-		include $blogdirectory.$post;
-	}
+		foreach ($blogentries as $post) {
+			$date = str_replace('.php','',$post);
+			$date_arr = explode('-', $post);
+			include $blogdirectory.$post;
+		}
 
-?>
+	?>
+
 	</section>
 	<footer>
 		<div class="text center">
@@ -45,15 +47,8 @@ include 'ui/header.php';
 </div>
 
 
-
-
-
 <?php
 include 'ui/popups.php';
-?>
 
-
-<?php
 if(!isset($tracking)){ $tracking = true; }
 include 'ui/footer.php';
-?>

@@ -1,4 +1,5 @@
 <?php
+
 if(!isset($config)){
 	require_once('_config.php');
 }

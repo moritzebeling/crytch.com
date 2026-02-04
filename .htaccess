@@ -1,29 +1,32 @@
 AddDefaultCharset UTF-8
-# DirectoryIndex tool_new.php
+DirectoryIndex index.php
 
 Options -Indexes
 
-RewriteEngine on
-RewriteBase /
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteBase /
 
-RewriteCond %{SERVER_PORT} 80
-RewriteRule ^(.*)$ https://crytch.com/$1 [R,L]
+	RewriteCond %{SERVER_PORT} 80
+	RewriteRule ^(.*)$ https://crytch.com/$1 [R,L]
 
-RewriteRule ^leak$ tool_new.php?leakmode=1
-RewriteRule ^about$ page_about.php
-RewriteRule ^blog$ 	page_blog.php
-RewriteRule ^new$ 	tool_new.php
-RewriteRule ^publickeys$ 	publickeys_show.php
-RewriteRule ^m/([A-Za-z0-9-]+)/?$ tool_open.php?messageid=$1 [NC,L]
-RewriteRule ^bf/([A-Za-z0-9-]+)/?$ tool_open_bruteforce.php?messageid=$1 [NC,L]
-RewriteRule ^pk/([A-Za-z0-9-]+)/?$ tool_open_publickeys.php?messageid=$1 [NC,L]
+	RewriteRule ^leak$  tool_new.php?leakmode=1
+	RewriteRule ^about$ page_about.php
+	RewriteRule ^blog$ 	page_blog.php
+	RewriteRule ^info$ 	page_info.php
+	RewriteRule ^new$ 	tool_new.php
+	RewriteRule ^publickeys$ 	publickeys_show.php
+	RewriteRule ^m/([A-Za-z0-9-]+)/?$ tool_open.php?messageid=$1 [NC,L]
+	RewriteRule ^bf/([A-Za-z0-9-]+)/?$ tool_open_bruteforce.php?messageid=$1 [NC,L]
+	RewriteRule ^pk/([A-Za-z0-9-]+)/?$ tool_open_publickeys.php?messageid=$1 [NC,L]
 
-RewriteRule ^favicon$ 	ui/favicon/favicon.png
-RewriteRule ^favicon.ico$ 	ui/favicon/favicon.png
-RewriteRule ^favicon.png$ 	ui/favicon/favicon.png
+	RewriteRule ^favicon$ 	  ui/favicon/favicon.png
+	RewriteRule ^favicon.ico$ ui/favicon/favicon.png
+	RewriteRule ^favicon.png$ ui/favicon/favicon.png
 
-RewriteRule ^robots.txt$ 	ui/robots.txt
-RewriteRule ^sitemap$ 	ui/sitemap.txt
+	RewriteRule ^robots.txt$ ui/robots.txt
+	RewriteRule ^sitemap$ 	 ui/sitemap.txt
+</IfModule>
 
 <ifModule mod_gzip.c>
 	mod_gzip_on Yes

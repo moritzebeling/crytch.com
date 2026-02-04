@@ -1,7 +1,7 @@
 <?php
 // make embedding external resources easier
 function embedresource($res,$min=0){
-	if($res == 'jquery' ){ echo "<script async src=\"https://code.jquery.com/jquery-3.2.1.min.js\" integrity=\"sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=\" crossorigin=\"anonymous\"></script>"; }
+	if($res == 'jquery' ){ echo "<script defer src=\"https://code.jquery.com/jquery-3.2.1.min.js\" integrity=\"sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=\" crossorigin=\"anonymous\"></script>"; }
 	if($res == 'paperjs'){ echo "<script type=\"text/javascript\" src=\"".BASEURL."/_/paper-full.min.js\"></script>"; }
 	if($res == 'roboto' ){ echo "<link href=\"https://fonts.googleapis.com/css?family=Roboto+Mono:400,700\" rel=\"stylesheet\" type=\"text/css\">"; }
 
@@ -13,8 +13,8 @@ function embedresource($res,$min=0){
 		$debug = '_debug';
 		$minify = '';
 	}
-	if($res == 'crytch'){ echo "<script async type=\"text/javascript\" src=\"".BASEURL."/v/".CRYTCH_VERSION."/crytch".$debug.$minify.".js\"></script>"; }
-	if($res == 'decrypt'){ echo "<script async type=\"text/javascript\" src=\"".BASEURL."/v/".CRYTCH_VERSION."/decrypt".$debug.$minify.".js\"></script>"; }
+	if($res == 'crytch'){ echo "<script defer type=\"text/javascript\" src=\"".BASEURL."/v/".CRYTCH_VERSION."/crytch".$debug.$minify.".js?v=3\"></script>"; }
+	if($res == 'decrypt'){ echo "<script defer type=\"text/javascript\" src=\"".BASEURL."/v/".CRYTCH_VERSION."/decrypt".$debug.$minify.".js?v=3\"></script>"; }
 }
 
 
@@ -24,7 +24,7 @@ function valClientID($x){
 	if($x == CLIENT){ return false; }
 	if(strlen($x) == 32){
 		$x = htmlspecialchars($x);
-		return $x;	
+		return $x;
 	}
 	return false;
 }

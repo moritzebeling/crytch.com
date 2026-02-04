@@ -27,7 +27,7 @@ function snap(x,y){
 function blow(x,y){
 	if (typeof y === 'undefined') { return x * grid.size; }
 	return { x: x * grid.size, y: y * grid.size };
-}	
+}
 
 // define vars for application use
 var style = {
@@ -123,7 +123,7 @@ function UndoDecryption(){
 	layer_decrypt = layer_message.clone();
 	layer_decrypt.visible = true;
 	layer_message.visible = false;
-	
+
 	view.update(true);
 	message.is_decrypted = false;
 }
@@ -144,7 +144,7 @@ function decrypt(key){
 		return;
 	}
 	StartDecryption();
-	
+
 	layer_decrypt.removeChildren();
 	layer_decrypt = layer_message.clone();
 	var countpaths = layer_decrypt._children.length;
@@ -216,27 +216,51 @@ function listen(){
 		else { console.log('server error'); }
 	});
 }
-var downloadDataUri = function(options) {
-	if(!options){ return; }
-	$.isPlainObject(options) || (options = {data: options});
-	options.filename || (options.filename = "download." + options.data.split(",")[0].split(";")[0].substring(5).split("/")[1]);
-	options.url || (options.url = "https://download-data-uri.appspot.com/");
-	$('<form method="post" action="'+options.url+'" style="display:none"><input type="hidden" name="filename" value="'+options.filename+'"/><input type="hidden" name="data" value="'+options.data+'"/></form>').submit().remove();
+
+
+function leadingZeros(t){
+	if (t < 10) {
+    t = '0' + t;
+  }
+  return t;
 }
-function downloadSVG(){
+function getTimeStamp() {
+	var today = new Date(),
+    month = leadingZeros( today.getMonth() + 1 ),
+    day = leadingZeros( today.getDate() ),
+    year = leadingZeros( today.getFullYear() - 2000 ),
+		h = leadingZeros( today.getHours() ),
+  	m = leadingZeros( today.getMinutes() ),
+  	s = leadingZeros( today.getSeconds() );
+  return year+month+day+'-'+h+m;
+}
+function getBlobURL(content, type) {
+	return URL.createObjectURL(new Blob([content], {
+		type: type
+	}));
+}
+function downloadSVG( event ){
+	var button = event.delegateTarget;
+
 	background = new Shape.Rectangle({
 		from: [0,0],
 		to: [blow(grid.width), blow(grid.height)],
 		fillColor: style.background
 	});
 	layer_interface.addChild(background);
+
 	var svg = project.exportSVG({ asString: true });
-	downloadDataUri({
-		data: 'data:image/svg+xml;base64,' + btoa(svg),
-		filename: 'crytch.svg'
-	});
+	var filename = 'Crytch-' + getTimeStamp() + '-Encrypted-Message.svg';
+
+	console.log( 'Export '+filename );
+
+	button.href = getBlobURL(svg, 'image/svg+xml');
+	button.download = filename;
+
 	background.remove();
+
 }
+
 function loadMessage(){
 	var message = $('#openmessage').text();
 	project.importJSON(message);
@@ -282,7 +306,7 @@ if($('body').attr('data-listen') == 1){
 
 
 // Handle I N T E R F A C E  - - - - - - - - - - - - - - - - - - - - - - - - - - -
-$('menu a').click(function(){
+$('menu a').click(function( event ){
 	var execute = $(this).attr('data-execute');
 	if(!execute){
 		var execute = $(this).parent().attr('data-execute');
@@ -299,7 +323,7 @@ $('menu a').click(function(){
 			switchtool('decrypt');
 		}
 	}
-	if(execute == 'export-svg'){ downloadSVG(); console.log('try to export'); }
+	if(execute == 'export-svg'){ downloadSVG( event ); }
 });
 
 
@@ -341,13 +365,6 @@ $(".corner.tl menu").hover(function(){
 		$(this).addClass('hover');
 	},function(){
 		$(this).removeClass('hover');
-});
-$("menu").hover(function(){
-		PreviewPath('hide');
-		interface.prevent_input = true;
-	},function(){
-		PreviewPath('show');
-		interface.prevent_input = false;
 });
 
 

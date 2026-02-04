@@ -1,2 +1,2 @@
-# crytch.com
+# crytch
 Encrypt a sketch
