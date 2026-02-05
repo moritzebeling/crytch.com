@@ -117,7 +117,9 @@ async function migrate() {
 
     // Fetch all messages from MySQL
     console.log("📥 Fetching messages from MySQL...");
-    const [rows] = await connection.execute("SELECT * FROM Messages ORDER BY id ASC");
+    const [rows] = await connection.execute(
+      "SELECT * FROM Messages ORDER BY id ASC"
+    );
     const oldMessages = rows as OldMessage[];
     console.log(`✅ Found ${oldMessages.length} messages\n`);
 
@@ -166,7 +168,9 @@ async function migrate() {
       style_stroke: old.style_stroke || 2,
       language: old.language || "en",
       settings: old.settings,
-      created_at: old.created ? Math.floor(new Date(old.created).getTime() / 1000) : Math.floor(Date.now() / 1000),
+      created_at: old.created
+        ? Math.floor(new Date(old.created).getTime() / 1000)
+        : Math.floor(Date.now() / 1000),
       view_count: old.opened || 0,
     }));
 
@@ -182,10 +186,11 @@ async function migrate() {
 
     // Verify
     const verifyDb = new Database(path.join(dataDir, "crytch.db"));
-    const count = verifyDb.prepare("SELECT COUNT(*) as count FROM messages").get() as { count: number };
+    const count = verifyDb
+      .prepare("SELECT COUNT(*) as count FROM messages")
+      .get() as { count: number };
     console.log(`   📦 Total in SQLite: ${count.count}`);
     verifyDb.close();
-
   } catch (error) {
     console.error("\n❌ Migration failed:", error);
     process.exit(1);

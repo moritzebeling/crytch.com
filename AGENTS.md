@@ -18,7 +18,7 @@ We want to rebuild the project from scratch.
 - Drawing tool (pen, text, move, grid snapping, keyboard shortcuts)
 - Encrypt and save (get sharable URL)
 - Decrypt and view
-- Support for multiple languages (English, German, Dutch) but we dont need different urls/paths for that, we can simply click a button and swich the lang variables. Translation strings should be in a json file.
+- Support for multiple languages (English, German, Dutch) but we dont need different urls/paths for that, we can simply click a button and swich the lang variables. Translation strings should be in a typed ts file.
 - About and blog subpages (german text)
 - We want to write static content in markdown, not html
 - we need to implement encryption version 1 and 2
@@ -27,7 +27,7 @@ We don’t need:
 
 - Dont invent anything that is not in the current codebase (Authentication, real-time collaboration, websockets, stats, etc.)
 - Send stuff via email
-- Listen for messages from other clients (that was a exhibition feature)
+- Listen for messages from other clients (that was a "Summaery" exhibition feature)
 - Also the leaking and everything related to the "Public Keys" exhibition
 
 ## Coding style:
