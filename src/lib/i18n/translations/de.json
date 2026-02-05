@@ -1,0 +1,108 @@
+{
+  "description": "ist ein Webtool, das private Nachrichten einfach, sicher und unterhaltsam macht.",
+  "general": {
+    "new": "Neu",
+    "clearCanvas": "Zeichenfläche leeren",
+    "confirmClearCanvas": "Möchtest du wirklich alle Zeichnungen löschen?",
+    "startNew": "Neue Nachricht beginnen",
+    "reloadPage": "Seite neu laden",
+    "reply": "Antworten",
+    "password": "Passwort",
+    "click": "Klick",
+    "drag": "Ziehen",
+    "doubleclick": "Doppelklick",
+    "delete": "Löschen",
+    "arrowKeys": "Pfeiltasten",
+    "confirm": "OK",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "open": "Öffnen",
+    "closeWindow": "Fenster schließen",
+    "success": "Erfolg",
+    "error": "Fehler",
+    "random": "Zufällig",
+    "default": "Standard",
+    "reset": "Zurücksetzen",
+    "doLater": "Später",
+    "changeOnReload": "Diese Änderung wird erst beim nächsten Laden der Seite angewendet.",
+    "more": "Über",
+    "alertMobile": "Diese Website ist noch nicht für mobile Geräte optimiert.",
+    "emailLink": "Fehlerbericht, Funktionswunsch, Lob",
+    "emailDefaultSubject": "Geheime Nachricht via crytch.com"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "langEn": "EN",
+    "langDe": "DE",
+    "langNl": "NL",
+    "gridSize": "Rastergröße",
+    "color": "Farbe",
+    "background": "Hintergrund",
+    "colorBlack": "S",
+    "colorWhite": "W",
+    "colorBlue": "B",
+    "colorRed": "R",
+    "strokeWidth": "Strichstärke"
+  },
+  "tools": {
+    "title": "Werkzeuge",
+    "toolFunctionality": "Werkzeugfunktionen",
+    "pen": {
+      "title": "Zeichnen",
+      "deleteLast": "Letzten Punkt löschen",
+      "startNew": "Neuen Pfad beginnen",
+      "close": "Pfad schließen",
+      "rectangle": "Rechteck zeichnen"
+    },
+    "text": {
+      "title": "Schreiben",
+      "deleteLast": "Letzten Buchstaben löschen",
+      "moveCursor": "Cursor bewegen"
+    },
+    "move": {
+      "title": "Bewegen",
+      "movePath": "Ganzen Pfad bewegen",
+      "movePoint": "Einzelnen Punkt bewegen"
+    },
+    "encrypt": {
+      "title": "Verschlüsseln",
+      "enterPassword": "Passwort wählen",
+      "saveEncrypted": "Speichern",
+      "saveDecrypted": "Ohne Verschlüsselung speichern"
+    },
+    "send": {
+      "title": "Senden",
+      "findMessageAt": "Deine Nachricht ist gespeichert unter",
+      "sendViaMail": "Link per E-Mail senden",
+      "enterMail": "E-Mail-Adresse eingeben",
+      "mailNotValid": "Ungültige E-Mail-Adresse",
+      "sendMail": "Senden"
+    },
+    "decrypt": {
+      "title": "Entschlüsseln",
+      "enterPassword": "Passwort eingeben",
+      "messageNotFound": "Diese Nachricht wurde leider nicht gefunden"
+    },
+    "export": {
+      "exportPdf": "Als PDF exportieren",
+      "exportPng": "PNG exportieren",
+      "exportSvg": "SVG exportieren",
+      "print": "Drucken",
+      "printPostcard": "Postkarte drucken"
+    }
+  },
+  "misc": {
+    "maxPaths": "Sieht aus, als hättest du Spaß. Super! Aber bitte beachte, dass so komplizierte Nachrichten zu Fehlern im Code führen können, was sogar zur Zerstörung der Nachricht führen kann. Du kannst dies vermeiden, indem du deine Nachricht vereinfachst."
+  },
+  "help": {
+    "title": "Anleitung",
+    "1": "<em>Erstelle</em> eine geheime visuelle Nachricht. Du kannst 3 verschiedene Werkzeuge benutzen: Zeichnen, Schreiben, Bewegen. Deine gesamte Nachricht, auch Text, besteht aus Ankerpunkten, die durch Linien verbunden sind.",
+    "2": "Wenn du fertig bist, klicke auf <em>Verschlüsseln</em>. Dann wähle ein Passwort. Mit jedem Buchstaben deines Passworts wird die Nachricht stärker verschlüsselt. So kannst du dein Sicherheitsniveau sofort sehen. Merke dir das Passwort gut, es wird nirgendwo gespeichert.",
+    "3": "Klicke auf <em>Speichern</em>. Deine verschlüsselte Nachricht wird jetzt gespeichert.",
+    "4": "Eine einzigartige <em>URL</em> wird generiert, unter der die verschlüsselte Nachricht zu finden ist. Sende sie an den Empfänger. Stelle sicher, dass du Link und Passwort über verschiedene Medien sendest.",
+    "5": "Du hast gerade eine geheime Nachricht gesendet.",
+    "6": "Sobald der Empfänger den Link öffnet, kann die ursprüngliche Nachricht durch Eingabe des <em>Passworts</em> wiederhergestellt werden.",
+    "read": "Dies ist eine geheime Nachricht. Klicke auf Entschlüsseln und gib das Passwort ein, um die ursprüngliche Nachricht wiederherzustellen."
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "description": "is een webtool die privéberichten leuk, eenvoudig en veilig maakt.",
+  "general": {
+    "new": "Nieuw",
+    "clearCanvas": "Canvas wissen",
+    "confirmClearCanvas": "Wil je echt al je tekeningen verwijderen?",
+    "startNew": "Nieuw bericht beginnen",
+    "reloadPage": "Pagina herladen",
+    "reply": "Antwoorden",
+    "password": "Wachtwoord",
+    "click": "Klik",
+    "drag": "Sleep",
+    "doubleclick": "Dubbelklik",
+    "delete": "Verwijderen",
+    "arrowKeys": "Pijltjes",
+    "confirm": "OK",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "open": "Openen",
+    "closeWindow": "Venster sluiten",
+    "success": "Succes",
+    "error": "Fout",
+    "random": "Willekeurig",
+    "default": "Standaard",
+    "reset": "Resetten",
+    "doLater": "Later",
+    "changeOnReload": "Deze wijziging wordt pas toegepast bij het opnieuw laden van de pagina.",
+    "more": "Over",
+    "alertMobile": "Deze website is nog niet geoptimaliseerd voor mobiel.",
+    "emailLink": "Bugrapport, functieverzoek, complimenten",
+    "emailDefaultSubject": "Geheim bericht via crytch.com"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "language": "Taal",
+    "langEn": "EN",
+    "langDe": "DE",
+    "langNl": "NL",
+    "gridSize": "Rastergrootte",
+    "color": "Kleur",
+    "background": "Achtergrond",
+    "colorBlack": "Z",
+    "colorWhite": "W",
+    "colorBlue": "B",
+    "colorRed": "R",
+    "strokeWidth": "Lijndikte"
+  },
+  "tools": {
+    "title": "Gereedschappen",
+    "toolFunctionality": "Gereedschapsfuncties",
+    "pen": {
+      "title": "Tekenen",
+      "deleteLast": "Laatste punt verwijderen",
+      "startNew": "Nieuw pad beginnen",
+      "close": "Pad sluiten",
+      "rectangle": "Rechthoek tekenen"
+    },
+    "text": {
+      "title": "Schrijven",
+      "deleteLast": "Laatste letter verwijderen",
+      "moveCursor": "Cursor verplaatsen"
+    },
+    "move": {
+      "title": "Verplaatsen",
+      "movePath": "Heel pad verplaatsen",
+      "movePoint": "Enkel punt verplaatsen"
+    },
+    "encrypt": {
+      "title": "Versleutelen",
+      "enterPassword": "Kies een wachtwoord",
+      "saveEncrypted": "Opslaan",
+      "saveDecrypted": "Opslaan zonder versleuteling"
+    },
+    "send": {
+      "title": "Verzenden",
+      "findMessageAt": "Je bericht is opgeslagen op",
+      "sendViaMail": "Link via e-mail verzenden",
+      "enterMail": "E-mailadres invoeren",
+      "mailNotValid": "Ongeldig e-mailadres",
+      "sendMail": "Verzenden"
+    },
+    "decrypt": {
+      "title": "Ontsleutelen",
+      "enterPassword": "Wachtwoord invoeren",
+      "messageNotFound": "Sorry, we konden dit bericht niet vinden"
+    },
+    "export": {
+      "exportPdf": "Exporteren als PDF",
+      "exportPng": "PNG exporteren",
+      "exportSvg": "SVG exporteren",
+      "print": "Afdrukken",
+      "printPostcard": "Ansichtkaart afdrukken"
+    }
+  },
+  "misc": {
+    "maxPaths": "Het lijkt erop dat je plezier hebt. Geweldig! Maar let op, zulke ingewikkelde berichten kunnen fouten in de code veroorzaken, wat zelfs tot vernietiging van het bericht kan leiden. Je kunt dit voorkomen door je bericht te vereenvoudigen."
+  },
+  "help": {
+    "title": "Hoe te",
+    "1": "<em>Maak</em> een geheim visueel bericht. Je kunt 3 verschillende gereedschappen gebruiken: Tekenen, Schrijven, Verplaatsen. Je hele bericht, zelfs tekst, bestaat uit ankerpunten, verbonden met lijnen.",
+    "2": "Als je klaar bent, klik op <em>Versleutelen</em>. Kies dan een wachtwoord. Met elke letter van je wachtwoord wordt het bericht meer versleuteld. Zo kun je je beveiligingsniveau direct zien. Onthoud het wachtwoord goed, het wordt nergens opgeslagen.",
+    "3": "Klik op <em>Opslaan</em>. Je versleutelde bericht wordt nu opgeslagen.",
+    "4": "Een unieke <em>URL</em> wordt gegenereerd, waaronder het versleutelde bericht te vinden is. Stuur het naar de ontvanger. Zorg ervoor dat je link en wachtwoord via verschillende media verstuurt.",
+    "5": "Je hebt zojuist een geheim bericht verzonden.",
+    "6": "Zodra de ontvanger de link opent, kan het oorspronkelijke bericht worden hersteld door het <em>wachtwoord</em> in te voeren.",
+    "read": "Dit is een geheim bericht. Klik op Ontsleutelen en voer het wachtwoord in om het oorspronkelijke bericht te herstellen."
+  }
+}

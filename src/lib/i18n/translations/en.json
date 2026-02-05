@@ -1,0 +1,108 @@
+{
+  "description": "is a webtool that makes private messaging fun, easy and secure.",
+  "general": {
+    "new": "New",
+    "clearCanvas": "Clear canvas",
+    "confirmClearCanvas": "Do you really want to delete your drawings?",
+    "startNew": "Start new message",
+    "reloadPage": "Reload page",
+    "reply": "Reply",
+    "password": "Password",
+    "click": "Click",
+    "drag": "Drag",
+    "doubleclick": "Doubleclick",
+    "delete": "Delete",
+    "arrowKeys": "Arrows",
+    "confirm": "OK",
+    "cancel": "Cancel",
+    "close": "Close",
+    "open": "Open",
+    "closeWindow": "Close window",
+    "success": "Success",
+    "error": "Error",
+    "random": "Random",
+    "default": "Default",
+    "reset": "Reset",
+    "doLater": "Later",
+    "changeOnReload": "This change will be first applied on next page reload.",
+    "more": "About",
+    "alertMobile": "This website is not yet optimized for mobile.",
+    "emailLink": "Bug report, feature request, props",
+    "emailDefaultSubject": "Secret message via crytch.com"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "langEn": "EN",
+    "langDe": "DE",
+    "langNl": "NL",
+    "gridSize": "Grid Size",
+    "color": "Color",
+    "background": "Background",
+    "colorBlack": "B",
+    "colorWhite": "W",
+    "colorBlue": "B",
+    "colorRed": "R",
+    "strokeWidth": "Stroke width"
+  },
+  "tools": {
+    "title": "Tools",
+    "toolFunctionality": "Tool Functionality",
+    "pen": {
+      "title": "Draw",
+      "deleteLast": "Delete last point",
+      "startNew": "Start new path",
+      "close": "Close path",
+      "rectangle": "Draw rectangle"
+    },
+    "text": {
+      "title": "Write",
+      "deleteLast": "Delete last letter",
+      "moveCursor": "Move cursor"
+    },
+    "move": {
+      "title": "Move",
+      "movePath": "Move whole path",
+      "movePoint": "Move single point"
+    },
+    "encrypt": {
+      "title": "Encrypt",
+      "enterPassword": "Choose a password",
+      "saveEncrypted": "Save",
+      "saveDecrypted": "Save without encryption"
+    },
+    "send": {
+      "title": "Send",
+      "findMessageAt": "Your message is stored at",
+      "sendViaMail": "Send link via E-Mail",
+      "enterMail": "Enter E-Mail address",
+      "mailNotValid": "Invalid E-Mail address",
+      "sendMail": "Send"
+    },
+    "decrypt": {
+      "title": "Decrypt",
+      "enterPassword": "Enter password",
+      "messageNotFound": "Sorry, we couldn't find this message"
+    },
+    "export": {
+      "exportPdf": "Export as PDF",
+      "exportPng": "Export PNG",
+      "exportSvg": "Export SVG",
+      "print": "Print",
+      "printPostcard": "Print postcard"
+    }
+  },
+  "misc": {
+    "maxPaths": "Looks like you're having fun. Great! But please notice, that such complicated messages are likely to create errors in the code which can even lead to the destruction of the message. You can avoid this by simplifying your message."
+  },
+  "help": {
+    "title": "How to",
+    "1": "<em>Create</em> a secret visual message. You can use 3 different tools: Draw, Write, Move. Your whole message, even text consists of anchorpoints, connected with lines.",
+    "2": "Once you're done, click <em>Encrypt</em>. Then choose a password. With every letter of your password, the message gets more encrypted. Thus you can see your level of security right away. Remember the password well, it will not be stored anywhere.",
+    "3": "Click <em>Save</em>. Your encrypted message will now be saved.",
+    "4": "A unique <em>URL</em> will be generated, under which the encrypted message can be found. Send it to the recipient. Make sure, that you send link and password using different media.",
+    "5": "You've just sent a secret message.",
+    "6": "Once the recipient opens the link, the original message can be restored by entering the <em>password</em>.",
+    "read": "This is a secret message. Click Decrypt and enter the password to restore the original message."
+  }
+}

@@ -1,0 +1,51 @@
+import { PageWrapper, PageHeader, PageSection, TextBlock, Figure, PageFooter } from "@/components/layout";
+import { LinkButton } from "@/components/ui/Button";
+
+export const metadata = {
+  title: "About - Crytch",
+  description: "Learn about Crytch, a visual cryptography tool",
+};
+
+<PageWrapper>
+<PageHeader title="Crytch" subtitle="is a webtool that makes private messaging fun, easy and secure." />
+
+<TextBlock>
+
+## Visual Cryptography
+
+*Crytch* is a visual cryptography tool that allows you to create encrypted visual messages. Unlike traditional text encryption, Crytch works with drawings and graphics, making it both secure and aesthetically interesting.
+
+The core concept is simple: every message you create—whether drawn or typed—consists of anchor points connected by lines. When you encrypt your message with a password, these anchor points are shifted according to a mathematical matrix. The result is a visual transformation that obscures the original message while maintaining its graphical nature.
+
+## How It Works
+
+When you create a message in Crytch, you're essentially creating a vector graphic made up of paths and points. The encryption process takes each point and shifts its position based on:
+
+1. The characters in your password
+2. A displacement matrix that maps each alphanumeric character to an [x, y] offset
+3. Additional modifiers based on the point's position in the path and a salt value
+
+The longer and more complex your password, the more scrambled the result. But here's the beautiful part: with the correct password, the original message can be perfectly restored by reversing the displacement process.
+
+## The Custom Typeface
+
+When you type text in Crytch, you're not actually typing—you're drawing. Each character is a predefined path with exactly 14 anchor points. This ensures consistent encryption behavior across all text content.
+
+The typeface was custom-designed to balance readability with encryption robustness. Each letter, number, and symbol has been carefully crafted to maintain its recognizable form while consisting of the right number of points for the encryption algorithm.
+
+## Security Through Obscurity?
+
+No. Crytch uses a form of visual steganography combined with point displacement. While this isn't cryptographically secure in the traditional sense (the algorithm is deterministic and reversible), it provides:
+
+- **Visual privacy**: The original message is genuinely unrecognizable without the password
+- **Creative communication**: A unique way to share secret messages
+- **Educational value**: A visual demonstration of how encryption transforms data
+
+For truly sensitive information, you should use established cryptographic tools. Crytch is best suited for creative, playful, or artistic communication where the visual transformation itself is part of the experience.
+
+</TextBlock>
+
+<PageFooter>
+<LinkButton href="/" variant="default">Create a message →</LinkButton>
+</PageFooter>
+</PageWrapper>
