@@ -27,6 +27,16 @@ body {
   font-weight: normal;
   background-color: var(--bg-color);
   color: var(--text-color);
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+em,
+strong,
+b,
+i {
+  font-weight: 700;
+  font-style: normal;
 }
 
 a {
