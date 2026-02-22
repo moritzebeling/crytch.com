@@ -17,6 +17,32 @@ import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
 
+function loadDotEnv() {
+  const envPath = path.join(process.cwd(), ".env");
+  if (!fs.existsSync(envPath)) return;
+
+  const raw = fs.readFileSync(envPath, "utf8");
+  for (const line of raw.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+
+    const sepIdx = trimmed.indexOf("=");
+    if (sepIdx === -1) continue;
+
+    const key = trimmed.slice(0, sepIdx).trim();
+    if (!key || process.env[key] !== undefined) continue;
+
+    let value = trimmed.slice(sepIdx + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    process.env[key] = value;
+  }
+}
+
 // Type definitions
 interface OldMessage {
   id: number;
@@ -57,6 +83,7 @@ interface NewMessage {
 
 async function migrate() {
   console.log("🚀 Starting migration from MySQL to SQLite...\n");
+  loadDotEnv();
 
   // Check for mysql2
   let mysql: typeof import("mysql2/promise") | null = null;
@@ -70,10 +97,16 @@ async function migrate() {
   // MySQL connection config
   const mysqlConfig = {
     host: process.env.MYSQL_HOST || "localhost",
+    port: process.env.MYSQL_PORT ? Number(process.env.MYSQL_PORT) : 3306,
     user: process.env.MYSQL_USER || "crytch",
     password: process.env.MYSQL_PASSWORD || "",
     database: process.env.MYSQL_DATABASE || "crytch",
   };
+
+  if (!Number.isInteger(mysqlConfig.port) || mysqlConfig.port <= 0) {
+    console.error("❌ MYSQL_PORT must be a valid positive integer");
+    process.exit(1);
+  }
 
   if (!mysqlConfig.password) {
     console.error("❌ MYSQL_PASSWORD environment variable is required");
@@ -111,7 +144,9 @@ async function migrate() {
 
   try {
     // Connect to MySQL
-    console.log("📡 Connecting to MySQL...");
+    console.log(
+      `📡 Connecting to MySQL at ${mysqlConfig.host}:${mysqlConfig.port}...`
+    );
     const connection = await mysql.createConnection(mysqlConfig);
     console.log("✅ Connected to MySQL\n");
 
