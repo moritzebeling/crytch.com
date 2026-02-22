@@ -1,5 +1,7 @@
 We want to rebuild the project from scratch.
 
+Legacy codebase: `./__legacy`
+
 ## Stack
 
 - pnpm

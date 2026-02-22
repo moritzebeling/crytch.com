@@ -217,7 +217,7 @@ async function migrate() {
 
     console.log("\n✅ Migration complete!");
     console.log(`   📊 Migrated: ${migrated}`);
-    console.log(`   ⏭️ Skipped (duplicates): ${skipped}`);
+    console.log(`   ⏭️  Skipped (duplicates): ${skipped}`);
 
     // Verify
     const verifyDb = new Database(path.join(dataDir, "crytch.db"));
