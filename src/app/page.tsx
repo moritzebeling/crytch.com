@@ -2,16 +2,16 @@
 
 import { useRef, useState, useCallback } from "react";
 import { DrawingCanvas, useCanvasFunctions } from "@/components/canvas";
-import { Button, Menu, MenuItem, Modal, ModalContent, ModalActions, ModalAction, ThemeProvider, useTheme } from "@/components/ui";
-import { Corner } from "@/components/layout";
+import { Modal, ModalContent, ModalActions, ModalAction, ThemeProvider, useTheme } from "@/components/ui";
 import { useTranslation, type Language } from "@/lib/i18n";
 import type { ToolType } from "@/types";
+import { HomeInfoMenus, HomeTools, HomeSettings, HomeEncrypt } from "@/components/home/HomeControls";
 
 function DrawingTool() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasFns = useCanvasFunctions(canvasRef);
   const { t, language, setLanguage, availableLanguages } = useTranslation();
-  const { background, setBackground, color, setColor, strokeWidth, setStrokeWidth, isDark } = useTheme();
+  const { background, setBackground, color, setColor, strokeWidth, setStrokeWidth } = useTheme();
 
   const [activeTool, setActiveTool] = useState<ToolType>("pen");
   const [canvasFilled, setCanvasFilled] = useState(false);
@@ -19,7 +19,6 @@ function DrawingTool() {
   const [password, setPassword] = useState("");
   const [savedUrl, setSavedUrl] = useState<string | null>(null);
   const [showClearModal, setShowClearModal] = useState(false);
-  const [showHelpMenu, setShowHelpMenu] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleToolChange = useCallback((tool: ToolType) => {
@@ -27,14 +26,12 @@ function DrawingTool() {
     canvasFns.setTool(tool);
   }, [canvasFns]);
 
-  const handlePasswordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
-
-    if (newPassword.length > 0 && canvasFilled) {
+  const handlePasswordChange = useCallback((value: string) => {
+    setPassword(value);
+    if (value.length > 0 && canvasFilled) {
       canvasFns.restore();
-      canvasFns.encrypt(newPassword);
-    } else if (newPassword.length === 0 && isEncrypted) {
+      canvasFns.encrypt(value);
+    } else if (value.length === 0 && isEncrypted) {
       canvasFns.restore();
     }
   }, [canvasFilled, isEncrypted, canvasFns]);
@@ -87,6 +84,21 @@ function DrawingTool() {
     }
   }, [savedUrl]);
 
+  const handleExportSvg = useCallback(() => {
+    const svg = canvasFns.exportSVG();
+    if (!svg) return;
+
+    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Crytch-${Date.now()}-Encrypted-Message.svg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [canvasFns]);
+
   return (
     <div className="fixed inset-0 overflow-hidden">
       <DrawingCanvas
@@ -94,242 +106,36 @@ function DrawingTool() {
         onEncryptedChange={setIsEncrypted}
       />
 
-      {/* Top Left - About/Help Menus */}
-      <Corner position="tl">
-        <Menu
-          trigger={<Button variant={showHelpMenu ? "active" : "default"}>{t("general.more")}</Button>}
-          position="tl"
-        >
-          <MenuItem>
-            <a href="/about" className="block hover:underline">{t("general.more")}</a>
-          </MenuItem>
-          <MenuItem>
-            <a href="/blog" className="block hover:underline">Blog</a>
-          </MenuItem>
-          <MenuItem noBorder>
-            <a 
-              href={`mailto:hello@crytch.com?subject=${encodeURIComponent(t("general.emailDefaultSubject"))}`}
-              className="block hover:underline"
-            >
-              {t("general.emailLink")}
-            </a>
-          </MenuItem>
-        </Menu>
+      <HomeInfoMenus t={t} />
 
-        <Menu
-          trigger={<Button onClick={() => setShowHelpMenu(!showHelpMenu)}>?</Button>}
-          position="tl"
-        >
-          <MenuItem>
-            <h3 className="text-sm font-medium mb-2">{t("help.title")}</h3>
-          </MenuItem>
-          <MenuItem>
-            <p className="text-xs" dangerouslySetInnerHTML={{ __html: t("help.1") }} />
-          </MenuItem>
-          <MenuItem>
-            <p className="text-xs" dangerouslySetInnerHTML={{ __html: t("help.2") }} />
-          </MenuItem>
-          <MenuItem>
-            <p className="text-xs" dangerouslySetInnerHTML={{ __html: t("help.3") }} />
-          </MenuItem>
-          <MenuItem>
-            <p className="text-xs" dangerouslySetInnerHTML={{ __html: t("help.4") }} />
-          </MenuItem>
-          <MenuItem noBorder>
-            <p className="text-xs" dangerouslySetInnerHTML={{ __html: t("help.5") }} />
-          </MenuItem>
-        </Menu>
-      </Corner>
+      <HomeTools activeTool={activeTool} onToolChange={handleToolChange} t={t} />
 
-      {/* Top Right - Tools */}
-      <Corner position="tr">
-        <Button
-          variant={activeTool === "pen" ? "active" : "default"}
-          onClick={() => handleToolChange("pen")}
-          title="D / P"
-        >
-          {t("tools.pen.title")}
-        </Button>
-        <Button
-          variant={activeTool === "text" ? "active" : "default"}
-          onClick={() => handleToolChange("text")}
-          title="W / T"
-          className="ml-2"
-        >
-          {t("tools.text.title")}
-        </Button>
-        <Button
-          variant={activeTool === "move" ? "active" : "default"}
-          onClick={() => handleToolChange("move")}
-          title="M / V / A"
-          className="ml-2"
-        >
-          {t("tools.move.title")}
-        </Button>
-      </Corner>
+      <HomeSettings
+        t={t}
+        language={language}
+        availableLanguages={availableLanguages}
+        onLanguageChange={(lang) => setLanguage(lang as Language)}
+        color={color}
+        onColorChange={setColor}
+        background={background}
+        onBackgroundChange={setBackground}
+        strokeWidth={strokeWidth}
+        onStrokeWidthChange={setStrokeWidth}
+        onExportSvg={handleExportSvg}
+        onClearCanvas={() => setShowClearModal(true)}
+        showNewButton={canvasFilled}
+      />
 
-      {/* Bottom Left - Settings */}
-      <Corner position="bl">
-        <Menu trigger={<Button>{t("settings.title")}</Button>} position="bl">
-          <MenuItem>
-            <div className="flex items-center justify-between">
-              <span>{t("settings.language")}</span>
-              <div className="flex gap-1">
-                {availableLanguages.map((lang) => (
-                  <Button
-                    key={lang}
-                    variant={language === lang ? "active" : "grey"}
-                    onClick={() => setLanguage(lang as Language)}
-                    className="px-2"
-                  >
-                    {lang.toUpperCase()}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </MenuItem>
-          <MenuItem>
-            <div className="flex items-center justify-between">
-              <span>{t("settings.color")}</span>
-              <div className="flex gap-1">
-                <Button
-                  variant={color === "#000000" ? "active" : "grey"}
-                  onClick={() => setColor("#000000")}
-                  className="px-2"
-                >
-                  {t("settings.colorBlack")}
-                </Button>
-                <Button
-                  variant={color === "#ffffff" ? "active" : "grey"}
-                  onClick={() => setColor("#ffffff")}
-                  className="px-2"
-                >
-                  {t("settings.colorWhite")}
-                </Button>
-                <Button
-                  variant={color === "#0000ff" ? "active" : "grey"}
-                  onClick={() => setColor("#0000ff")}
-                  className="px-2"
-                >
-                  {t("settings.colorBlue")}
-                </Button>
-                <Button
-                  variant={color === "#ff0000" ? "active" : "grey"}
-                  onClick={() => setColor("#ff0000")}
-                  className="px-2"
-                >
-                  {t("settings.colorRed")}
-                </Button>
-              </div>
-            </div>
-          </MenuItem>
-          <MenuItem>
-            <div className="flex items-center justify-between">
-              <span>{t("settings.background")}</span>
-              <div className="flex gap-1">
-                <Button
-                  variant={background === "#ffffff" ? "active" : "grey"}
-                  onClick={() => setBackground("#ffffff")}
-                  className="px-2"
-                >
-                  {t("settings.colorWhite")}
-                </Button>
-                <Button
-                  variant={background === "#000000" ? "active" : "grey"}
-                  onClick={() => setBackground("#000000")}
-                  className="px-2"
-                >
-                  {t("settings.colorBlack")}
-                </Button>
-              </div>
-            </div>
-          </MenuItem>
-          <MenuItem noBorder>
-            <div className="flex items-center justify-between">
-              <span>{t("settings.strokeWidth")}</span>
-              <div className="flex gap-1 items-center">
-                <Button onClick={() => setStrokeWidth(strokeWidth - 1)} className="px-2">-</Button>
-                <span className="w-8 text-center">{strokeWidth}</span>
-                <Button onClick={() => setStrokeWidth(strokeWidth + 1)} className="px-2">+</Button>
-              </div>
-        </div>
-          </MenuItem>
-        </Menu>
-
-        {canvasFilled && (
-          <Button
-            variant="grey"
-            onClick={() => setShowClearModal(true)}
-            className="ml-2"
-          >
-            {t("general.new")}
-          </Button>
-        )}
-      </Corner>
-
-      {/* Bottom Right - Encrypt/Save/Send */}
-      <Corner position="br">
-        {!savedUrl ? (
-          <Menu
-            trigger={
-              <Button variant={canvasFilled ? "default" : "inactive"} disabled={!canvasFilled}>
-                {t("tools.encrypt.title")}
-              </Button>
-            }
-            position="br"
-          >
-            <MenuItem>
-              <div className="mb-2">
-                <label className="block mb-1 text-xs">{t("tools.encrypt.enterPassword")}</label>
-                <input
-                  type="text"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  className="w-full"
-                  placeholder={t("general.password")}
-                  autoComplete="off"
-                />
-              </div>
-            </MenuItem>
-            <MenuItem noBorder>
-              <Button
-                onClick={handleSave}
-                disabled={!canvasFilled || isSaving}
-                variant={canvasFilled && !isSaving ? "default" : "inactive"}
-                className="w-full text-center"
-              >
-                {isSaving ? "..." : password.length > 0 ? t("tools.encrypt.saveEncrypted") : t("tools.encrypt.saveDecrypted")}
-              </Button>
-            </MenuItem>
-          </Menu>
-        ) : (
-          <Menu trigger={<Button variant="active">{t("tools.send.title")}</Button>} position="br">
-            <MenuItem>
-              <p className="text-xs mb-2">{t("tools.send.findMessageAt")}</p>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={savedUrl}
-                  readOnly
-                  className="flex-1 text-xs"
-                  onClick={(e) => (e.target as HTMLInputElement).select()}
-                />
-                <Button onClick={handleCopyUrl} className="px-2">Copy</Button>
-              </div>
-            </MenuItem>
-            <MenuItem noBorder>
-              <a
-                href={savedUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-                className="block text-center hover:underline"
-              >
-                {t("general.open")} →
-              </a>
-            </MenuItem>
-          </Menu>
-        )}
-      </Corner>
+      <HomeEncrypt
+        t={t}
+        canvasFilled={canvasFilled}
+        password={password}
+        isSaving={isSaving}
+        savedUrl={savedUrl}
+        onPasswordChange={handlePasswordChange}
+        onSave={handleSave}
+        onCopyUrl={handleCopyUrl}
+      />
 
       {/* Clear Canvas Modal */}
       <Modal isOpen={showClearModal} onClose={() => setShowClearModal(false)}>
