@@ -29,6 +29,25 @@ function normalizeColor(value: string | null): string | null {
   return COLOR_MAP[normalized] ?? value;
 }
 
+function normalizeReadableColor(
+  color: string | null,
+  background: string | null
+): string | null {
+  if (color === "#000000" && background === "#000000") {
+    return "#ffffff";
+  }
+
+  if (color === "#ffffff" && background === "#ffffff") {
+    return "#000000";
+  }
+
+  if (color === background) {
+    return "#000000";
+  }
+
+  return color;
+}
+
 function main() {
   const dataDir = path.join(process.cwd(), "data");
   const dbPath =
@@ -55,8 +74,12 @@ function main() {
 
   const normalizeAll = sqlite.transaction((records: Row[]) => {
     for (const row of records) {
-      const nextStyleColor = normalizeColor(row.style_color);
       const nextStyleBackground = normalizeColor(row.style_background);
+      const normalizedStyleColor = normalizeColor(row.style_color);
+      const nextStyleColor = normalizeReadableColor(
+        normalizedStyleColor,
+        nextStyleBackground
+      );
 
       if (
         nextStyleColor !== row.style_color ||
