@@ -15,7 +15,7 @@ export type AnnualLanguageStats = {
   total: number;
 };
 
-export type TopViewedMessage = {
+export type MessageDetails = {
   url: string;
   views: number;
   date: string;
@@ -40,7 +40,8 @@ export type StatsData = {
   messagesByWeekday: GroupedCount[];
   messagesByHour: GroupedCount[];
   languageByYear: Array<[string, GroupedCount[]]>;
-  topViewedMessages: TopViewedMessage[];
+  topViewedMessages: MessageDetails[];
   topStyleCombinations: TopStyleCombination[];
   canvasWidthBuckets: GroupedCount[];
+  recentMessages: MessageDetails[];
 };

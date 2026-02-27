@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/layout";
+import { PageHeader } from '@/components/layout';
 import {
   BarChart,
   SegmentBar,
@@ -6,20 +6,20 @@ import {
   StatNumbers,
   StatSection,
   StyleSwatchGrid,
-  TopMessagesList,
+  MessagesList,
   type AnnualLanguageStats,
   type GroupedCount,
   type MonthStats,
   type StatsData,
   type TopStyleCombination,
-  type TopViewedMessage,
-} from "@/components/stats";
-import { db, messages } from "@/lib/db";
-import { asc, count, desc, sql } from "drizzle-orm";
+  type MessageDetails,
+} from '@/components/stats';
+import { db, messages } from '@/lib/db';
+import { asc, count, desc, sql } from 'drizzle-orm';
 
 export const metadata = {
-  title: "Stats - Crytch",
-  description: "Simple message statistics for Crytch.",
+  title: 'Stats - Crytch',
+  description: 'Simple message statistics for Crytch.',
 };
 
 async function getStats(): Promise<StatsData> {
@@ -47,13 +47,14 @@ async function getStats(): Promise<StatsData> {
     messagesByHour,
     topStyleCombinations,
     canvasWidthBuckets,
+    recentMessages,
   ] = await Promise.all([
     db.select({ total: count() }).from(messages),
     db
       .select({ total: count() })
       .from(messages)
       .where(
-        sql`${createdAtEpoch} >= cast(strftime('%s', 'now', '-6 months') as integer)`
+        sql`${createdAtEpoch} >= cast(strftime('%s', 'now', '-6 months') as integer)`,
       ),
     db
       .select({
@@ -61,7 +62,7 @@ async function getStats(): Promise<StatsData> {
       })
       .from(messages)
       .where(
-        sql`${createdAtEpoch} >= cast(strftime('%s', 'now', '-6 months') as integer)`
+        sql`${createdAtEpoch} >= cast(strftime('%s', 'now', '-6 months') as integer)`,
       ),
     db
       .select({
@@ -98,7 +99,7 @@ async function getStats(): Promise<StatsData> {
       .groupBy(yearKey, sql`coalesce(${messages.language}, 'unknown')`)
       .orderBy(
         asc(yearKey),
-        asc(sql`coalesce(${messages.language}, 'unknown')`)
+        asc(sql`coalesce(${messages.language}, 'unknown')`),
       ),
     db
       .select({
@@ -114,9 +115,9 @@ async function getStats(): Promise<StatsData> {
       .from(messages)
       .orderBy(
         desc(sql`coalesce(${messages.viewCount}, 0)`),
-        asc(messages.messageUrl)
+        asc(messages.messageUrl),
       )
-      .limit(15),
+      .limit(10),
     db
       .select({
         key: sql<string>`strftime('%w', ${createdAtEpoch}, 'unixepoch')`,
@@ -147,7 +148,7 @@ async function getStats(): Promise<StatsData> {
         desc(count()),
         asc(styleBackgroundValue),
         asc(styleColorValue),
-        asc(styleStrokeValue)
+        asc(styleStrokeValue),
       )
       .limit(6),
     db
@@ -173,9 +174,20 @@ async function getStats(): Promise<StatsData> {
           when ${messages.windowWidth} < 1440 then '1024-1439'
           else '>=1440'
         end
-      `
+      `,
       )
       .orderBy(desc(count())),
+    process.env.NODE_ENV === 'development'
+      ? db
+          .select({
+            url: messages.messageUrl,
+            views: sql<number>`coalesce(${messages.viewCount}, 0)`,
+            date: sql<string>`strftime('%Y-%m-%d', ${createdAtEpoch}, 'unixepoch')`,
+          })
+          .from(messages)
+          .orderBy(desc(createdAtEpoch))
+          .limit(10)
+      : Promise.resolve([]),
   ]);
 
   const languageByYearMap = new Map<string, GroupedCount[]>();
@@ -183,7 +195,7 @@ async function getStats(): Promise<StatsData> {
   for (const row of languageByYear as AnnualLanguageStats[]) {
     languageTotals.set(
       row.language,
-      (languageTotals.get(row.language) ?? 0) + row.total
+      (languageTotals.get(row.language) ?? 0) + row.total,
     );
     const rows = languageByYearMap.get(row.year) ?? [];
     rows.push({ key: row.language, total: row.total });
@@ -193,7 +205,7 @@ async function getStats(): Promise<StatsData> {
   const languageRank = new Map(
     Array.from(languageTotals.entries())
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .map(([language], index) => [language, index])
+      .map(([language], index) => [language, index]),
   );
 
   const languageByYearOrdered = Array.from(languageByYearMap.entries()).map(
@@ -205,9 +217,9 @@ async function getStats(): Promise<StatsData> {
             (languageRank.get(a.key) ?? Number.MAX_SAFE_INTEGER) -
               (languageRank.get(b.key) ?? Number.MAX_SAFE_INTEGER) ||
             b.total - a.total ||
-            a.key.localeCompare(b.key)
+            a.key.localeCompare(b.key),
         ),
-      ] as [string, GroupedCount[]]
+      ] as [string, GroupedCount[]],
   );
 
   return {
@@ -221,9 +233,10 @@ async function getStats(): Promise<StatsData> {
     messagesByWeekday: messagesByWeekday as GroupedCount[],
     messagesByHour: messagesByHour as GroupedCount[],
     languageByYear: languageByYearOrdered,
-    topViewedMessages: topViewedMessages as TopViewedMessage[],
+    topViewedMessages: topViewedMessages as MessageDetails[],
     topStyleCombinations: topStyleCombinations as TopStyleCombination[],
     canvasWidthBuckets: canvasWidthBuckets as GroupedCount[],
+    recentMessages: recentMessages as MessageDetails[],
   };
 }
 
@@ -234,29 +247,35 @@ export default async function StatsPage() {
 
   const topStyleCells = Array.from(
     { length: 6 },
-    (_, i) => stats.topStyleCombinations[i] ?? null
+    (_, i) => stats.topStyleCombinations[i] ?? null,
   );
 
-  const weekdayOrder = ["1", "2", "3", "4", "5", "6", "0"];
+  const weekdayOrder = ['1', '2', '3', '4', '5', '6', '0'];
   const weekdayLabels: Record<string, string> = {
-    "0": "Sun",
-    "1": "Mon",
-    "2": "Tue",
-    "3": "Wed",
-    "4": "Thu",
-    "5": "Fri",
-    "6": "Sat",
+    '0': 'Sun',
+    '1': 'Mon',
+    '2': 'Tue',
+    '3': 'Wed',
+    '4': 'Thu',
+    '5': 'Fri',
+    '6': 'Sat',
   };
   const weekdayMap = new Map(
-    stats.messagesByWeekday.map((item) => [item.key, item.total])
+    stats.messagesByWeekday.map((item) => [item.key, item.total]),
   );
   const orderedWeekdays = weekdayOrder.map((key) => ({
     key,
     total: weekdayMap.get(key) ?? 0,
   }));
 
-  const maxYearCount = Math.max(...stats.messagesByMonth.map((i) => i.total), 1);
-  const maxYearViews = Math.max(...stats.messagesByMonth.map((i) => i.views), 1);
+  const maxYearCount = Math.max(
+    ...stats.messagesByMonth.map((i) => i.total),
+    1,
+  );
+  const maxYearViews = Math.max(
+    ...stats.messagesByMonth.map((i) => i.views),
+    1,
+  );
   const maxWeekdayCount = Math.max(...orderedWeekdays.map((i) => i.total), 1);
   const maxHourCount = Math.max(...stats.messagesByHour.map((i) => i.total), 1);
 
@@ -268,14 +287,22 @@ export default async function StatsPage() {
         <StatSection title="Recent activity">
           <StatNumbers
             items={[
-              { value: stats.messagesLast6Months, label: "New messages in last 6 months" },
-              { value: stats.viewsLast6Months, label: "Views in last 6 months" },
+              {
+                value: stats.messagesLast6Months,
+                label: 'New messages in last 6 months',
+              },
+              {
+                value: stats.viewsLast6Months,
+                label: 'Views in last 6 months',
+              },
             ]}
           />
         </StatSection>
 
         <StatSection title="Messages created">
-          <StatNumbers items={[{ value: stats.totalMessages, label: "Total messages" }]} />
+          <StatNumbers
+            items={[{ value: stats.totalMessages, label: 'Total messages' }]}
+          />
           {stats.messagesByMonth.length > 0 && (
             <BarChart
               items={stats.messagesByMonth.map((item) => ({
@@ -288,15 +315,22 @@ export default async function StatsPage() {
               labelClassName="px-4 py-2 flex flex-col font-size-6 relative z-10"
             />
           )}
+          {process.env.NODE_ENV === 'development' &&
+            stats.recentMessages.length > 0 && (
+              <MessagesList
+                label={`Last ${stats.recentMessages.length} created messages`}
+                messages={stats.recentMessages}
+              />
+            )}
         </StatSection>
 
         <StatSection title="Messages viewed">
           <StatNumbers
             items={[
-              { value: stats.totalViews, label: "Total views" },
+              { value: stats.totalViews, label: 'Total views' },
               {
                 value: (stats.totalViews / safeTotalMessages).toFixed(1),
-                label: "Average views per message",
+                label: 'Average views per message',
               },
             ]}
           />
@@ -308,7 +342,7 @@ export default async function StatsPage() {
                 lines: [
                   item.key,
                   String(item.views),
-                  item.total > 0 ? (item.views / item.total).toFixed(1) : "0",
+                  item.total > 0 ? (item.views / item.total).toFixed(1) : '0',
                 ],
               }))}
               height="h-120"
@@ -317,7 +351,10 @@ export default async function StatsPage() {
             />
           )}
           {stats.topViewedMessages.length > 0 && (
-            <TopMessagesList messages={stats.topViewedMessages} />
+            <MessagesList
+              label={`Top ${stats.topViewedMessages.length} viewed messages`}
+              messages={stats.topViewedMessages}
+            />
           )}
         </StatSection>
 
@@ -327,7 +364,10 @@ export default async function StatsPage() {
               items={orderedWeekdays.map((item) => ({
                 key: item.key,
                 percent: ((item.total / maxWeekdayCount) * 100).toFixed(1),
-                lines: [weekdayLabels[item.key] ?? item.key, String(item.total)],
+                lines: [
+                  weekdayLabels[item.key] ?? item.key,
+                  String(item.total),
+                ],
               }))}
               height="h-72"
               caption="Messages by weekday"
@@ -362,7 +402,10 @@ export default async function StatsPage() {
           )}
           {stats.languageByYear.length > 0 && (
             <StackedColumnChart
-              columns={stats.languageByYear.map(([year, rows]) => ({ key: year, rows }))}
+              columns={stats.languageByYear.map(([year, rows]) => ({
+                key: year,
+                rows,
+              }))}
               caption="Languages by year"
             />
           )}

@@ -1,13 +1,14 @@
-import type { TopViewedMessage } from "./types";
+import type { MessageDetails } from './types';
 
-type TopMessagesListProps = {
-  messages: TopViewedMessage[];
+type MessagesListProps = {
+  label: string;
+  messages: MessageDetails[];
 };
 
-export function TopMessagesList({ messages }: TopMessagesListProps) {
+export function MessagesList({ label, messages }: MessagesListProps) {
   return (
     <div className="border border-black">
-      <p className="px-4 py-2 border-b">Top {messages.length} viewed messages</p>
+      <p className="px-4 py-2 border-b">{label}</p>
       <ul>
         {messages.map((item) => (
           <li key={item.url} className="border-b last:border-b-0">
