@@ -1,4 +1,19 @@
 import { PageHeader } from "@/components/layout";
+import {
+  BarChart,
+  SegmentBar,
+  StackedColumnChart,
+  StatNumbers,
+  StatSection,
+  StyleSwatchGrid,
+  TopMessagesList,
+  type AnnualLanguageStats,
+  type GroupedCount,
+  type MonthStats,
+  type StatsData,
+  type TopStyleCombination,
+  type TopViewedMessage,
+} from "@/components/stats";
 import { db, messages } from "@/lib/db";
 import { asc, count, desc, sql } from "drizzle-orm";
 
@@ -7,38 +22,7 @@ export const metadata = {
   description: "Simple message statistics for Crytch.",
 };
 
-type GroupedCount = {
-  key: string;
-  total: number;
-};
-
-type MonthStats = {
-  key: string;
-  total: number;
-  views: number;
-};
-
-type AnnualLanguageStats = {
-  year: string;
-  language: string;
-  total: number;
-};
-
-type TopViewedMessage = {
-  url: string;
-  views: number;
-  date: string;
-};
-
-type TopStyleCombination = {
-  key: string;
-  styleBackground: string;
-  styleColor: string;
-  styleStroke: number;
-  total: number;
-};
-
-async function getStats() {
+async function getStats(): Promise<StatsData> {
   // Legacy imports may have milliseconds, while new rows use seconds.
   const createdAtEpoch = sql<number>`(case when ${messages.createdAt} > 20000000000 then ${messages.createdAt} / 1000 else ${messages.createdAt} end)`;
   const yearValue = sql<number>`cast(strftime('%Y', ${createdAtEpoch}, 'unixepoch') as integer)`;
@@ -247,34 +231,13 @@ export default async function StatsPage() {
   const stats = await getStats();
   const safeTotalMessages = stats.totalMessages || 1;
   const pct = (value: number) => ((value / safeTotalMessages) * 100).toFixed(1);
+
   const topStyleCells = Array.from(
     { length: 6 },
-    (_, index) => stats.topStyleCombinations[index] ?? null
+    (_, i) => stats.topStyleCombinations[i] ?? null
   );
+
   const weekdayOrder = ["1", "2", "3", "4", "5", "6", "0"];
-  const weekdayMap = new Map(
-    stats.messagesByWeekday.map((item) => [item.key, item.total])
-  );
-  const orderedWeekdayItems = weekdayOrder.map((key) => ({
-    key,
-    total: weekdayMap.get(key) ?? 0,
-  }));
-  const maxWeekdayCount = Math.max(
-    ...orderedWeekdayItems.map((item) => item.total),
-    1
-  );
-  const maxHourCount = Math.max(
-    ...stats.messagesByHour.map((item) => item.total),
-    1
-  );
-  const maxYearCount = Math.max(
-    ...stats.messagesByMonth.map((item) => item.total),
-    1
-  );
-  const maxYearViews = Math.max(
-    ...stats.messagesByMonth.map((item) => item.views),
-    1
-  );
   const weekdayLabels: Record<string, string> = {
     "0": "Sun",
     "1": "Mon",
@@ -284,381 +247,159 @@ export default async function StatsPage() {
     "5": "Fri",
     "6": "Sat",
   };
+  const weekdayMap = new Map(
+    stats.messagesByWeekday.map((item) => [item.key, item.total])
+  );
+  const orderedWeekdays = weekdayOrder.map((key) => ({
+    key,
+    total: weekdayMap.get(key) ?? 0,
+  }));
+
+  const maxYearCount = Math.max(...stats.messagesByMonth.map((i) => i.total), 1);
+  const maxYearViews = Math.max(...stats.messagesByMonth.map((i) => i.views), 1);
+  const maxWeekdayCount = Math.max(...orderedWeekdays.map((i) => i.total), 1);
+  const maxHourCount = Math.max(...stats.messagesByHour.map((i) => i.total), 1);
 
   return (
     <>
       <PageHeader title="Crytch" subtitle="Stats" />
 
       <main className="p-6 space-y-16">
-        <section className="space-y-4">
-          <h2 className="text-xl">Recent activity</h2>
+        <StatSection title="Recent activity">
+          <StatNumbers
+            items={[
+              { value: stats.messagesLast6Months, label: "New messages in last 6 months" },
+              { value: stats.viewsLast6Months, label: "Views in last 6 months" },
+            ]}
+          />
+        </StatSection>
 
-          <div className="border flex">
-            <div className="flex-1 px-4 py-2 border-r">
-              <p className="text-4xl mb-24">{stats.messagesLast6Months}</p>
-              <p>New messages in last 6 months</p>
-            </div>
-            <div className="flex-1 px-4 py-2">
-              <p className="text-4xl mb-24">{stats.viewsLast6Months}</p>
-              <p>Views in last 6 months</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="text-xl">Messages created</h2>
-
-          <div className="border flex">
-            <div className="flex-1 px-4 py-2">
-              <p className="text-4xl mb-24">{stats.totalMessages}</p>
-              <p>Total messages</p>
-            </div>
-          </div>
-
+        <StatSection title="Messages created">
+          <StatNumbers items={[{ value: stats.totalMessages, label: "Total messages" }]} />
           {stats.messagesByMonth.length > 0 && (
-            <figure className="border border-black">
-              <ul className="flex border-b w-full h-120 items-end">
-                {stats.messagesByMonth.map((item) => {
-                  const percent = ((item.total / maxYearCount) * 100).toFixed(
-                    1
-                  );
-                  return (
-                    <li
-                      key={item.key}
-                      className="border-r last:border-r-0 overflow-hidden min-w-4 flex-1 h-full"
-                    >
-                      <div className="relative h-full">
-                        <div
-                          className={`absolute bg-black/5 inset-x-0 bottom-0${percent === "100.0" ? "" : " border-t"}`}
-                          style={{ height: `${percent}%` }}
-                        />
-                        <p className="px-4 py-2 flex flex-col font-size-6 relative z-10">
-                          <span>{item.key}</span>
-                          <span>{item.total}</span>
-                        </p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-              <figcaption className="px-4 py-2">Messages per year</figcaption>
-            </figure>
+            <BarChart
+              items={stats.messagesByMonth.map((item) => ({
+                key: item.key,
+                percent: ((item.total / maxYearCount) * 100).toFixed(1),
+                lines: [item.key, String(item.total)],
+              }))}
+              height="h-120"
+              caption="Messages per year"
+              labelClassName="px-4 py-2 flex flex-col font-size-6 relative z-10"
+            />
           )}
-        </section>
+        </StatSection>
 
-        <section className="space-y-4">
-          <h2 className="text-xl">Messages viewed</h2>
-
-          <div className="border flex">
-            <div className="flex-1 px-4 py-2 border-r">
-              <p className="text-4xl mb-24">{stats.totalViews}</p>
-              <p>Total views</p>
-            </div>
-            <div className="flex-1 px-4 py-2">
-              <p className="text-4xl mb-24">
-                {(stats.totalViews / safeTotalMessages).toFixed(1)}
-              </p>
-              <p>Average views per message</p>
-            </div>
-          </div>
-
+        <StatSection title="Messages viewed">
+          <StatNumbers
+            items={[
+              { value: stats.totalViews, label: "Total views" },
+              {
+                value: (stats.totalViews / safeTotalMessages).toFixed(1),
+                label: "Average views per message",
+              },
+            ]}
+          />
           {stats.messagesByMonth.length > 0 && (
-            <figure className="border border-black">
-              <ul className="flex border-b w-full h-120 items-end">
-                {stats.messagesByMonth.map((item) => {
-                  const percent = ((item.views / maxYearViews) * 100).toFixed(
-                    1
-                  );
-                  const avgViewsPerMessage =
-                    item.total > 0 ? (item.views / item.total).toFixed(1) : "0";
-                  return (
-                    <li
-                      key={`views-${item.key}`}
-                      className="border-r last:border-r-0 overflow-hidden min-w-4 flex-1 h-full"
-                    >
-                      <div className="relative h-full">
-                        <div
-                          className={`absolute bg-black/5 inset-x-0 bottom-0${percent === "100.0" ? "" : " border-t"}`}
-                          style={{ height: `${percent}%` }}
-                        />
-                        <p className="px-4 py-2 flex flex-col font-size-6 relative z-10">
-                          <span>{item.key}</span>
-                          <span>{item.views}</span>
-                          <span>{avgViewsPerMessage}</span>
-                        </p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-              <figcaption className="px-4 py-2">Views per year</figcaption>
-            </figure>
+            <BarChart
+              items={stats.messagesByMonth.map((item) => ({
+                key: item.key,
+                percent: ((item.views / maxYearViews) * 100).toFixed(1),
+                lines: [
+                  item.key,
+                  String(item.views),
+                  item.total > 0 ? (item.views / item.total).toFixed(1) : "0",
+                ],
+              }))}
+              height="h-120"
+              caption="Views per year"
+              labelClassName="px-4 py-2 flex flex-col font-size-6 relative z-10"
+            />
           )}
-
           {stats.topViewedMessages.length > 0 && (
-            <div className="border border-black">
-              <p className="px-4 py-2 border-b">
-                Top {stats.topViewedMessages.length} viewed messages
-              </p>
-              <ul>
-                {stats.topViewedMessages.map((item) => (
-                  <li key={item.url} className="border-b last:border-b-0">
-                    <a
-                      href={`/m/${item.url}`}
-                      className="px-4 py-2 flex gap-8 no-underline hover:no-underline hover:text-gray-500"
-                      target="_blank"
-                    >
-                      <span className="w-24">{item.views} views</span>
-                      <span className="flex-1">{item.url}</span>
-                      <span>{item.date}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <TopMessagesList messages={stats.topViewedMessages} />
           )}
-        </section>
+        </StatSection>
 
-        <section className="space-y-4">
-          <h2 className="text-xl">Usage time</h2>
-
-          {orderedWeekdayItems.length > 0 && (
-            <figure className="border border-black">
-              <ul className="flex border-b w-full h-72 items-end">
-                {orderedWeekdayItems.map((item) => {
-                  const percent = (
-                    (item.total / maxWeekdayCount) *
-                    100
-                  ).toFixed(1);
-                  return (
-                    <li
-                      key={item.key}
-                      className="border-r last:border-r-0 overflow-hidden min-w-4 flex-1 h-full"
-                    >
-                      <div className="relative h-full">
-                        <div
-                          className={`absolute bg-black/5 inset-x-0 bottom-0${percent === "100.0" ? "" : " border-t"}`}
-                          style={{ height: `${percent}%` }}
-                        />
-                        <p className="px-4 py-2 flex flex-col h-full relative z-10">
-                          <span>{weekdayLabels[item.key] ?? item.key}</span>
-                          <span>{item.total}</span>
-                        </p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-              <figcaption className="px-4 py-2">Messages by weekday</figcaption>
-            </figure>
+        <StatSection title="Usage time">
+          {orderedWeekdays.length > 0 && (
+            <BarChart
+              items={orderedWeekdays.map((item) => ({
+                key: item.key,
+                percent: ((item.total / maxWeekdayCount) * 100).toFixed(1),
+                lines: [weekdayLabels[item.key] ?? item.key, String(item.total)],
+              }))}
+              height="h-72"
+              caption="Messages by weekday"
+              labelClassName="px-4 py-2 flex flex-col h-full relative z-10"
+            />
           )}
-
           {stats.messagesByHour.length > 0 && (
-            <figure className="border border-black">
-              <ul className="flex border-b w-full h-72 items-end">
-                {stats.messagesByHour.map((item) => {
-                  const percent = ((item.total / maxHourCount) * 100).toFixed(
-                    1
-                  );
-                  return (
-                    <li
-                      key={item.key}
-                      className="border-r last:border-r-0 overflow-hidden min-w-4 flex-1 h-full"
-                    >
-                      <div className="relative h-full">
-                        <div
-                          className={`absolute bg-black/5 inset-x-0 bottom-0 ${percent === "100.0" ? "" : " border-t"}`}
-                          style={{ height: `${percent}%` }}
-                        />
-                        <p className="p-2 text-center flex flex-col h-full relative z-10">
-                          <span>{item.key}</span>
-                          <span>{item.total}</span>
-                        </p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-              <figcaption className="px-4 py-2">Messages by hour</figcaption>
-            </figure>
+            <BarChart
+              items={stats.messagesByHour.map((item) => ({
+                key: item.key,
+                percent: ((item.total / maxHourCount) * 100).toFixed(1),
+                lines: [item.key, String(item.total)],
+              }))}
+              height="h-72"
+              caption="Messages by hour"
+              labelClassName="p-2 text-center flex flex-col h-full relative z-10"
+            />
           )}
-        </section>
+        </StatSection>
 
-        <section className="space-y-4">
-          <h2 className="text-xl">Language</h2>
-
+        <StatSection title="Language">
           {stats.messagesByLanguage.length > 0 && (
-            <figure className="border border-black">
-              <ul className="flex border-b w-full">
-                {stats.messagesByLanguage.map((item) => {
-                  const percent = Number(pct(item.total));
-                  return (
-                    <li
-                      key={item.key}
-                      className="border-r last:border-r-0 overflow-hidden min-w-4 hover:min-w-[80px]"
-                      style={{ width: `${percent}%` }}
-                    >
-                      <p className="px-4 py-2 flex flex-col">
-                        <span>{item.key}</span>
-                        <span>{item.total}</span>
-                        <span>{pct(item.total)}%</span>
-                      </p>
-                    </li>
-                  );
-                })}
-              </ul>
-              <figcaption className="px-4 py-2">
-                Messages by language
-              </figcaption>
-            </figure>
+            <SegmentBar
+              items={stats.messagesByLanguage.map((item) => ({
+                key: item.key,
+                label: item.key,
+                total: item.total,
+                percent: pct(item.total),
+              }))}
+              caption="Messages by language"
+            />
           )}
-
           {stats.languageByYear.length > 0 && (
-            <figure className="border border-black">
-              <div className="flex w-full border-b items-stretch">
-                {stats.languageByYear.map(([year, rows]) => {
-                  const yearTotal =
-                    rows.reduce((sum, row) => sum + row.total, 0) || 1;
-                  const largestLanguageByYear =
-                    rows.reduce((largest, row) =>
-                      row.total > largest.total ? row : largest
-                    ).key ?? "";
-                  return (
-                    <div key={year} className="flex-1 border-r last:border-r-0">
-                      <ul className="flex flex-col h-120">
-                        {rows.map((row) => {
-                          const percent = (
-                            (row.total / yearTotal) *
-                            100
-                          ).toFixed(1);
-                          return (
-                            <li
-                              key={`${year}-${row.key}`}
-                              className="px-4 py-2 border-b last:border-b-0 flex flex-col overflow-hidden min-h-4 hover:min-h-[60px]"
-                              style={{
-                                height: `${percent}%`,
-                              }}
-                            >
-                              {row.key === largestLanguageByYear && (
-                                <span>{year}</span>
-                              )}
-                              <span>{row.key}</span>
-                              <span>{row.total}</span>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  );
-                })}
-              </div>
-              <figcaption className="px-4 py-2">Languages by year</figcaption>
-            </figure>
+            <StackedColumnChart
+              columns={stats.languageByYear.map(([year, rows]) => ({ key: year, rows }))}
+              caption="Languages by year"
+            />
           )}
-        </section>
+        </StatSection>
 
-        <section className="space-y-4">
-          <h2 className="text-xl">Display</h2>
-
+        <StatSection title="Display">
           {stats.topStyleCombinations.length > 0 && (
-            <div className="border border-black">
-              <p className="px-4 py-2 border-b">Top style combinations</p>
-              <ul className="grid grid-cols-3">
-                {topStyleCells.map((item, index) => (
-                  <li
-                    key={item?.key ?? `style-cell-${index}`}
-                    className={`relative aspect-square border-black ${
-                      index % 3 === 2 ? "" : "border-r"
-                    } ${index < 3 ? "border-b" : ""}`}
-                    style={
-                      item
-                        ? {
-                            backgroundColor: item.styleBackground,
-                            color: item.styleColor,
-                          }
-                        : undefined
-                    }
-                  >
-                    {item ? (
-                      <>
-                        <span className="absolute top-0 left-0 px-4 py-2">
-                          {pct(item.total)}%
-                        </span>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div
-                            className="size-16 flex items-center justify-center rounded-md border-solid"
-                            style={{
-                              borderColor: item.styleColor,
-                              borderWidth: `${item.styleStroke}px`,
-                            }}
-                          >
-                            <span className="text-2xl">
-                              {["Crytch".slice(index, index + 1)]}
-                            </span>
-                          </div>
-                        </div>
-                      </>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <StyleSwatchGrid cells={topStyleCells} pct={pct} />
           )}
-
           {stats.canvasWidthBuckets.length > 0 && (
-            <figure className="border border-black">
-              <ul className="flex w-full border-b">
-                {stats.canvasWidthBuckets.map((item) => {
-                  const percent = Number(pct(item.total));
-                  return (
-                    <li
-                      key={item.key}
-                      className="border-r last:border-r-0 overflow-hidden min-w-4 hover:min-w-[100px]"
-                      style={{ width: `${percent}%` }}
-                    >
-                      <p className="px-4 py-2 flex flex-col whitespace-nowrap break-keep">
-                        <span>{item.key}</span>
-                        <span>{item.total}</span>
-                        <span>{pct(item.total)}%</span>
-                      </p>
-                    </li>
-                  );
-                })}
-              </ul>
-              <figcaption className="px-4 py-2">
-                Messages by screen size
-              </figcaption>
-            </figure>
+            <SegmentBar
+              items={stats.canvasWidthBuckets.map((item) => ({
+                key: item.key,
+                label: item.key,
+                total: item.total,
+                percent: pct(item.total),
+              }))}
+              caption="Messages by screen size"
+              hoverMinWidth="100px"
+              contentClassName="whitespace-nowrap break-keep"
+            />
           )}
-        </section>
+        </StatSection>
 
-        <section className="space-y-4">
-          <h2 className="text-xl">Version</h2>
-
+        <StatSection title="Version">
           {stats.messagesByVersion.length > 0 && (
-            <figure className="border border-black">
-              <ul className="flex w-full border-b">
-                {stats.messagesByVersion.map((item) => {
-                  const percent = Number(pct(item.total));
-                  return (
-                    <li
-                      key={item.key}
-                      className="border-r last:border-r-0 overflow-hidden min-w-4 hover:min-w-[80px]"
-                      style={{ width: `${percent}%` }}
-                    >
-                      <p className="px-4 py-2 flex flex-col">
-                        <span>v{item.key}</span>
-                        <span>{item.total}</span>
-                        <span>{pct(item.total)}%</span>
-                      </p>
-                    </li>
-                  );
-                })}
-              </ul>
-              <figcaption className="px-4 py-2">Messages by version</figcaption>
-            </figure>
+            <SegmentBar
+              items={stats.messagesByVersion.map((item) => ({
+                key: item.key,
+                label: `v${item.key}`,
+                total: item.total,
+                percent: pct(item.total),
+              }))}
+              caption="Messages by version"
+            />
           )}
-        </section>
+        </StatSection>
       </main>
     </>
   );
