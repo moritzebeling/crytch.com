@@ -1,4 +1,4 @@
-import type { TopStyleCombination } from "./types";
+import type { TopStyleCombination } from './types';
 
 type StyleSwatchGridProps = {
   cells: Array<TopStyleCombination | null>;
@@ -14,18 +14,21 @@ export function StyleSwatchGrid({ cells, pct }: StyleSwatchGridProps) {
           <li
             key={item?.key ?? `style-cell-${index}`}
             className={`relative aspect-square border-black ${
-              index % 3 === 2 ? "" : "border-r"
-            } ${index < 3 ? "border-b" : ""}`}
+              index % 3 === 2 ? '' : 'border-r'
+            } ${index < 3 ? 'border-b' : ''}`}
             style={
               item
-                ? { backgroundColor: item.styleBackground, color: item.styleColor }
+                ? {
+                    backgroundColor: item.styleBackground,
+                    color: item.styleColor,
+                  }
                 : undefined
             }
           >
             {item ? (
               <>
                 <span className="absolute top-0 left-0 px-4 py-2">
-                  {pct(item.total)}%
+                  {pct(item.total)}%{item.styleStroke}
                 </span>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div
@@ -36,7 +39,7 @@ export function StyleSwatchGrid({ cells, pct }: StyleSwatchGridProps) {
                     }}
                   >
                     <span className="text-2xl">
-                      {["Crytch".slice(index, index + 1)]}
+                      {['Crytchdotcom'.slice(index, index + 1)]}
                     </span>
                   </div>
                 </div>

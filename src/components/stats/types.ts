@@ -43,5 +43,6 @@ export type StatsData = {
   topViewedMessages: MessageDetails[];
   topStyleCombinations: TopStyleCombination[];
   canvasWidthBuckets: GroupedCount[];
+  strokeWidths: GroupedCount[];
   recentMessages: MessageDetails[];
 };

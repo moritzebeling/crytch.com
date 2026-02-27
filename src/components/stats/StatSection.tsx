@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
 type StatSectionProps = {
   title: string;
@@ -7,7 +7,7 @@ type StatSectionProps = {
 
 export function StatSection({ title, children }: StatSectionProps) {
   return (
-    <section className="space-y-4">
+    <section className="space-y-8">
       <h2 className="text-xl">{title}</h2>
       {children}
     </section>

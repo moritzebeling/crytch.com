@@ -6,6 +6,7 @@ import {
   StatNumbers,
   StatSection,
   StyleSwatchGrid,
+  StyleStrokeWidth,
   MessagesList,
   type AnnualLanguageStats,
   type GroupedCount,
@@ -47,6 +48,7 @@ async function getStats(): Promise<StatsData> {
     messagesByHour,
     topStyleCombinations,
     canvasWidthBuckets,
+    strokeWidths,
     recentMessages,
   ] = await Promise.all([
     db.select({ total: count() }).from(messages),
@@ -177,6 +179,14 @@ async function getStats(): Promise<StatsData> {
       `,
       )
       .orderBy(desc(count())),
+    db
+      .select({
+        key: sql<string>`cast(${styleStrokeValue} as text)`,
+        total: count(),
+      })
+      .from(messages)
+      .groupBy(styleStrokeValue)
+      .orderBy(asc(styleStrokeValue)),
     process.env.NODE_ENV === 'development'
       ? db
           .select({
@@ -236,6 +246,7 @@ async function getStats(): Promise<StatsData> {
     topViewedMessages: topViewedMessages as MessageDetails[],
     topStyleCombinations: topStyleCombinations as TopStyleCombination[],
     canvasWidthBuckets: canvasWidthBuckets as GroupedCount[],
+    strokeWidths: strokeWidths as GroupedCount[],
     recentMessages: recentMessages as MessageDetails[],
   };
 }
@@ -414,6 +425,17 @@ export default async function StatsPage() {
         <StatSection title="Display">
           {stats.topStyleCombinations.length > 0 && (
             <StyleSwatchGrid cells={topStyleCells} pct={pct} />
+          )}
+          {stats.strokeWidths.length > 0 && (
+            <StyleStrokeWidth
+              items={stats.strokeWidths.map((item) => ({
+                key: item.key,
+                label: item.key,
+                total: item.total,
+                percent: pct(item.total),
+              }))}
+              caption="Most used stroke widths"
+            />
           )}
           {stats.canvasWidthBuckets.length > 0 && (
             <SegmentBar
