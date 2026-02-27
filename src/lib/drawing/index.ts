@@ -11,6 +11,8 @@ export {
   isMobileDevice,
 } from "./grid";
 
+export { rgbToHex, repairHex } from "./colors";
+
 export {
   DEFAULT_PATH_STYLE,
   INTERFACE_STYLE,
