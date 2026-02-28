@@ -1,4 +1,7 @@
 import type { TopStyleCombination } from './types';
+import { TypefaceLetterCanvas } from '@/components/canvas/TypefaceLetterCanvas';
+
+const LETTERS = ['C', 'r', 'y', 't', 'c', 'h'] as const;
 
 type StyleSwatchGridProps = {
   cells: Array<TopStyleCombination | null>;
@@ -20,29 +23,21 @@ export function StyleSwatchGrid({ cells, pct }: StyleSwatchGridProps) {
               item
                 ? {
                     backgroundColor: item.styleBackground,
-                    color: item.styleColor,
                   }
                 : undefined
             }
           >
             {item ? (
               <>
-                <span className="absolute top-0 left-0 px-4 py-2">
-                  {pct(item.total)}%{item.styleStroke}
+                <span className="absolute top-0 left-0 px-4 py-2" style={{ color: item.styleColor }}>
+                  {pct(item.total)}%
                 </span>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div
-                    className="size-16 flex items-center justify-center rounded-md border-solid"
-                    style={{
-                      borderColor: item.styleColor,
-                      borderWidth: `${item.styleStroke}px`,
-                    }}
-                  >
-                    <span className="text-2xl">
-                      {['Crytchdotcom'.slice(index, index + 1)]}
-                    </span>
-                  </div>
-                </div>
+                <TypefaceLetterCanvas
+                  char={LETTERS[index]}
+                  color={item.styleColor}
+                  strokeWidth={item.styleStroke}
+                  className="absolute inset-0 w-full h-full"
+                />
               </>
             ) : null}
           </li>
