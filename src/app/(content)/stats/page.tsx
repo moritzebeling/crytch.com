@@ -1,4 +1,4 @@
-import { PageHeader, PageFooter } from '@/components/layout';
+import { PageHeader, PageFooter } from '@/components/content';
 import {
   BarChart,
   CumulativeLineChart,

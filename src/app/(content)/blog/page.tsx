@@ -1,5 +1,4 @@
-import { PageHeader, PageFooter } from "@/components/layout";
-import { BlogPost, BlogText, BlogImage, BlogFigure } from "@/components/blog";
+import { PageHeader, PageFooter, BlogPost, BlogText, BlogImage, BlogFigure } from "@/components/content";
 
 export const metadata = {
   title: "Blog - Crytch",

@@ -1,5 +1,4 @@
-import { PageHeader, PageSection, Figure } from "@/components/layout";
-import { AboutText, AboutParagraph, AboutFooter, Break } from "@/components/about";
+import { PageHeader, PageSection, Figure, TextBlock, ContentParagraph, PageFooter, Break } from "@/components/content";
 
 export const metadata = {
   title: "About - Crytch",
@@ -20,14 +19,14 @@ export default function AboutPage() {
       />
 
       <PageSection>
-        <AboutText>
-          <AboutParagraph first>
+        <TextBlock>
+          <ContentParagraph first>
             Wer eine <em>digitale Nachricht</em> auf den Weg bringt, kann sicher sein, dass sie gelesen wird&nbsp;− nicht unbedingt und ausschließlich vom Empfänger. Vor allem seit den Enthüllungen durch Whistleblower wie Edward Snowden hat das Bedürfnis nach der zuverlässigeren <em>Absicherung</em> privater Kommunikationswege spürbar zugenommen. Obwohl das Angebot an Verschlüsselungstechnologien andauernd wächst, konnte sich bislang keine Anwendung durchsetzen. Oft ist die Installation umständlich, die Handhabung kompliziert, das Kodierungsverfahren undurchsichtig. Die angestrebte Daten-Autarkie führt zum Kontrollverlust&nbsp;− das Unbehagen bleibt.
-          </AboutParagraph>
-          <AboutParagraph>
+          </ContentParagraph>
+          <ContentParagraph>
             Vor mehr als zwanzig Jahren entwickelten die israelischen Informatiker und Kryptologen Moni Naor und Adi Shamir ein visuelles Verschlüsselungsverfahren. Bei diesem wird das zu schützende Bild in Teilbilder zerlegt, wobei die einzelnen „Shares" wertlos sind&nbsp;− erst durch exaktes Übereinanderlegen der Teilbilder wird das ursprüngliche Motiv wieder sichtbar. Für die Dechiffrierung ist nicht unbedingt ein Computer erforderlich, sie kann ebenso auf analogem Wege durch das menschliche Auge erfolgen.
-          </AboutParagraph>
-        </AboutText>
+          </ContentParagraph>
+        </TextBlock>
 
         <Figure
           src="/about/specimen_figure_c.png"
@@ -35,11 +34,11 @@ export default function AboutPage() {
           caption="Visuelle Kodierung der Buchstaben"
         />
 
-        <AboutText>
-          <AboutParagraph first>
+        <TextBlock>
+          <ContentParagraph first>
             Die Idee der <em>visuellen Kryptographie</em> wird in Crytch für Buchstaben und Formen adaptiert. Zeichen und Zeichnungen bestehen aus Ankerpunkten, die durch Linien miteinander verbunden sind. Während der Ein­gabe des Passworts werden die Punkte schrittweise auf einer variablen Matrix verschoben. Das <em>Passwort</em> wird dabei nicht gespeichert.
-          </AboutParagraph>
-        </AboutText>
+          </ContentParagraph>
+        </TextBlock>
 
         <Figure
           src="/about/specimen_figure_a.png"
@@ -47,24 +46,24 @@ export default function AboutPage() {
           caption="Konstruktion und Dekonstruktion eines Buchstabens"
         />
 
-        <AboutText>
-          <AboutParagraph first>
+        <TextBlock>
+          <ContentParagraph first>
             Als Verifizierung einer korrekten Eingabe dient ausschließlich das entschlüsselte Bild. Ob und wann der ursprüngliche Zustand der Nachricht wiederherge­stellt wurde, kann nur ein <em>menschlicher Beobachter</em> erkennen. Daher ist es unwahrscheinlich, durch automa­tisiertes Ausprobieren verschiedener Passwörter („Brute‑Force-Methode") zum dechiffrierten Bild zu gelangen. Gleichermaßen kann auch der Empfänger dabei zusehen, wie die Botschaft während der Eingabe des Passworts entschlüsselt wird.
-          </AboutParagraph>
-          <AboutParagraph>
+          </ContentParagraph>
+          <ContentParagraph>
             Textnachrichten werden in einer speziell ­dafür gestalteten Schrift dargestellt, die zur ­visuellen ­<em>Kodierung</em> geeignet ist. Damit die Anzahl der vorhan­denen Ankerpunkte keine Rückschlüsse auf den kodierten Buchstaben erlaubt, bestehen alle Glyphen aus gleich vielen Ankerpunkten. Um einen zusammenhängenden Pfad zu erhalten, sind die Zeichen aus ­einer Linie gezeichnet und bewegen sich in 90-&nbsp;und 45‑Grad-Winkeln innerhalb eines quadratischen Rasters.
-          </AboutParagraph>
-          <AboutParagraph>
+          </ContentParagraph>
+          <ContentParagraph>
             Das gemeinsame Raster, an dem sich Text- und Bildelemente ausrichten, bildet die Grundlage für eine charakteristische <em>Formensprache</em> aller mit Crytch erstellten Botschaften. Im Gestaltungs­prozess können Faktoren wie Farbe, Rasterweite und Strichstärke angepasst werden&nbsp;− auch die vorge­fertigten Buchstaben lassen sich manuell verändern.
-          </AboutParagraph>
-          <AboutParagraph>
+          </ContentParagraph>
+          <ContentParagraph>
             Aus den konzeptionellen Prämissen geht eine eigenständige formale Ästhetik hervor, die Crytch zum Gestaltungswerkzeug macht. Aus den scheinbar enorm reduzierten Optionen resultieren vielgestal­tige Kompositionsmöglichkeiten.
-          </AboutParagraph>
-        </AboutText>
+          </ContentParagraph>
+        </TextBlock>
       </PageSection>
 
-      <AboutFooter>
-        <p className="mb-0">
+      <PageFooter>
+        <p>
           <Break>Eine Arbeit von</Break>
           <br />
           <Break>
@@ -73,26 +72,24 @@ export default function AboutPage() {
           </Break>{" "}
           Bauhaus-Universität Weimar.
         </p>
-        <p className="mb-0">
+        <p>
           <Break>Entstanden im Semester­projekt ­<a href="https://www.instagram.com/digitaltypography/" target="_blank" rel="noopener noreferrer"><em>Private&nbsp;Conversation</em></a>,</Break>{" "}
           geleitet von Christoph&nbsp;Knoth und Konrad&nbsp;Renner.
         </p>
-        <p className="mb-0">
+        <p>
           <Break>Weimar im Juli&nbsp;2016</Break>
         </p>
-        <p>&nbsp;</p>
-        <p>
+        <p className="mt-[18px]">
           <a href="http://www.form.de/de/news/interview-zu-crytch" target="_blank" rel="noopener noreferrer">Interview mit dem <em>form&nbsp;Magazin</em> April&nbsp;2017</a>
         </p>
-        <p>&nbsp;</p>
-        <p>
+        <p className="mt-[18px]">
           <Break>Teil der <em>Bauhaus&nbsp;Essentials</em> 2016 der marke.6</Break>{" "}
           <Break>Ausgezeichnet mit dem Certificate of Typographic Excellence des <em>TDC&nbsp;New&nbsp;York</em></Break>{" "}
           <Break>und erschienen im <em>TDC&nbsp;Tokyo</em> Annual Book 2017.</Break>{" "}
           <Break>Ausgestellt auf dem <em>Spinnereirundgang</em> 2017 in Leipzig</Break>{" "}
           <Break>Teil des <em>Typodarium</em> 2018</Break>
         </p>
-      </AboutFooter>
+      </PageFooter>
     </>
   );
 }
