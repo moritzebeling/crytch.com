@@ -1,4 +1,4 @@
-import { PageHeader } from '@/components/layout';
+import { PageHeader, PageFooter } from '@/components/layout';
 import {
   BarChart,
   CumulativeLineChart,
@@ -54,6 +54,7 @@ async function getStats(): Promise<StatsData> {
     canvasWidthBuckets,
     strokeWidths,
     recentMessages,
+    latestMessageResult,
   ] = await Promise.all([
     db.select({ total: count() }).from(messages),
     db
@@ -210,6 +211,11 @@ async function getStats(): Promise<StatsData> {
           .orderBy(desc(createdAtEpoch))
           .limit(10)
       : Promise.resolve([]),
+    db
+      .select({
+        date: sql<string>`strftime('%Y-%m-%d', max(${createdAtEpoch}), 'unixepoch')`,
+      })
+      .from(messages),
   ]);
 
   const languageByYearMap = new Map<string, GroupedCount[]>();
@@ -261,6 +267,7 @@ async function getStats(): Promise<StatsData> {
     canvasWidthBuckets: canvasWidthBuckets as GroupedCount[],
     strokeWidths: strokeWidths as GroupedCount[],
     recentMessages: recentMessages as MessageDetails[],
+    latestMessageDate: latestMessageResult[0]?.date ?? null,
   };
 }
 
@@ -492,6 +499,17 @@ export default async function StatsPage() {
           )}
         </StatSection>
       </main>
+      <PageFooter>
+        <p className="text-sm">
+          {stats.latestMessageDate && (
+            <>
+              Last inlcuded message: {stats.latestMessageDate}
+              <br />
+            </>
+          )}
+          Page generated: {new Date().toISOString().slice(0, 10)}
+        </p>
+      </PageFooter>
     </>
   );
 }

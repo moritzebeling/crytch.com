@@ -46,4 +46,5 @@ export type StatsData = {
   canvasWidthBuckets: GroupedCount[];
   strokeWidths: GroupedCount[];
   recentMessages: MessageDetails[];
+  latestMessageDate: string | null;
 };
