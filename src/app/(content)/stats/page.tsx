@@ -11,7 +11,7 @@ import {
   MessagesList,
   type AnnualLanguageStats,
   type GroupedCount,
-  type MonthStats,
+  type YearStats,
   type StatsData,
   type TopStyleCombination,
   type MessageDetails,
@@ -28,7 +28,6 @@ async function getStats(): Promise<StatsData> {
   // Legacy imports may have milliseconds, while new rows use seconds.
   const createdAtEpoch = sql<number>`(case when ${messages.createdAt} > 20000000000 then ${messages.createdAt} / 1000 else ${messages.createdAt} end)`;
   const yearValue = sql<number>`cast(strftime('%Y', ${createdAtEpoch}, 'unixepoch') as integer)`;
-  const yearKeyLabel = sql<string>`cast(${yearValue} as text)`;
   const yearKey = sql<string>`strftime('%Y', ${createdAtEpoch}, 'unixepoch')`;
   const styleBackgroundValue = sql<string>`coalesce(${messages.styleBackground}, '#ffffff')`;
   const styleColorValue = sql<string>`coalesce(${messages.styleColor}, '#000000')`;
@@ -41,7 +40,7 @@ async function getStats(): Promise<StatsData> {
     totalMessagesResult,
     messagesLast6MonthsResult,
     viewsLast6MonthsResult,
-    monthlyActivity,
+    annualActivity,
     monthlyMessages,
     messagesByVersion,
     messagesByLanguage,
@@ -73,7 +72,7 @@ async function getStats(): Promise<StatsData> {
       ),
     db
       .select({
-        key: yearKeyLabel,
+        key: yearKey,
         total: count(),
         views: sql<number>`coalesce(sum(coalesce(${messages.viewCount}, 0)), 0)`,
       })
@@ -255,7 +254,7 @@ async function getStats(): Promise<StatsData> {
     messagesLast6Months: messagesLast6MonthsResult[0]?.total ?? 0,
     viewsLast6Months: viewsLast6MonthsResult[0]?.total ?? 0,
     totalViews: totalViewsResult[0]?.total ?? 0,
-    messagesByMonth: monthlyActivity as MonthStats[],
+    messagesByYear: annualActivity as YearStats[],
     monthlyMessages: monthlyMessages as GroupedCount[],
     messagesByVersion: messagesByVersion as GroupedCount[],
     messagesByLanguage: messagesByLanguage as GroupedCount[],
@@ -306,11 +305,11 @@ export default async function StatsPage() {
   });
 
   const maxYearCount = Math.max(
-    ...stats.messagesByMonth.map((i) => i.total),
+    ...stats.messagesByYear.map((i) => i.total),
     1,
   );
   const maxYearViews = Math.max(
-    ...stats.messagesByMonth.map((i) => i.views),
+    ...stats.messagesByYear.map((i) => i.views),
     1,
   );
   const maxWeekdayCount = Math.max(...orderedWeekdays.map((i) => i.total), 1);
@@ -340,9 +339,9 @@ export default async function StatsPage() {
           <StatNumbers
             items={[{ value: stats.totalMessages, label: 'Total messages' }]}
           />
-          {stats.messagesByMonth.length > 0 && (
+          {stats.messagesByYear.length > 0 && (
             <BarChart
-              items={stats.messagesByMonth.map((item) => ({
+              items={stats.messagesByYear.map((item) => ({
                 key: item.key,
                 percent: ((item.total / maxYearCount) * 100).toFixed(1),
                 lines: [item.key, String(item.total)],
@@ -378,9 +377,9 @@ export default async function StatsPage() {
               },
             ]}
           />
-          {stats.messagesByMonth.length > 0 && (
+          {stats.messagesByYear.length > 0 && (
             <BarChart
-              items={stats.messagesByMonth.map((item) => ({
+              items={stats.messagesByYear.map((item) => ({
                 key: item.key,
                 percent: ((item.views / maxYearViews) * 100).toFixed(1),
                 lines: [
@@ -457,7 +456,7 @@ export default async function StatsPage() {
 
         <StatSection title="Display">
           {stats.topStyleCombinations.length > 0 && (
-            <StyleSwatchGrid cells={topStyleCells} pct={pct} />
+            <StyleSwatchGrid cells={topStyleCells} totalMessages={stats.totalMessages} />
           )}
           {stats.strokeWidths.length > 0 && (
             <StyleStrokeWidth
@@ -503,7 +502,7 @@ export default async function StatsPage() {
         <p className="text-sm">
           {stats.latestMessageDate && (
             <>
-              Last inlcuded message: {stats.latestMessageDate}
+              Last included message: {stats.latestMessageDate}
               <br />
             </>
           )}

@@ -15,7 +15,7 @@ export { MessagesList } from './MessagesList';
 export type {
   AnnualLanguageStats,
   GroupedCount,
-  MonthStats,
+  YearStats,
   StatsData,
   TopStyleCombination,
   MessageDetails,

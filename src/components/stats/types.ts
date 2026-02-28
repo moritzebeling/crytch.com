@@ -3,7 +3,7 @@ export type GroupedCount = {
   total: number;
 };
 
-export type MonthStats = {
+export type YearStats = {
   key: string;
   total: number;
   views: number;
@@ -34,7 +34,7 @@ export type StatsData = {
   messagesLast6Months: number;
   viewsLast6Months: number;
   totalViews: number;
-  messagesByMonth: MonthStats[];
+  messagesByYear: YearStats[];
   monthlyMessages: GroupedCount[];
   messagesByVersion: GroupedCount[];
   messagesByLanguage: GroupedCount[];

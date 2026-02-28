@@ -5,10 +5,12 @@ const LETTERS = ['C', 'r', 'y', 't', 'c', 'h'] as const;
 
 type StyleSwatchGridProps = {
   cells: Array<TopStyleCombination | null>;
-  pct: (value: number) => string;
+  totalMessages: number;
 };
 
-export function StyleSwatchGrid({ cells, pct }: StyleSwatchGridProps) {
+export function StyleSwatchGrid({ cells, totalMessages }: StyleSwatchGridProps) {
+  const safeTotalMessages = totalMessages || 1;
+  const pct = (value: number) => ((value / safeTotalMessages) * 100).toFixed(1);
   return (
     <div className="border border-black">
       <p className="px-4 py-2 border-b">Top style combinations</p>
