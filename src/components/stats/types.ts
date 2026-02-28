@@ -35,6 +35,7 @@ export type StatsData = {
   viewsLast6Months: number;
   totalViews: number;
   messagesByMonth: MonthStats[];
+  monthlyMessages: GroupedCount[];
   messagesByVersion: GroupedCount[];
   messagesByLanguage: GroupedCount[];
   messagesByWeekday: GroupedCount[];

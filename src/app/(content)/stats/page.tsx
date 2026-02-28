@@ -1,6 +1,7 @@
 import { PageHeader } from '@/components/layout';
 import {
   BarChart,
+  CumulativeLineChart,
   SegmentBar,
   StackedColumnChart,
   StatNumbers,
@@ -34,11 +35,14 @@ async function getStats(): Promise<StatsData> {
   const styleStrokeValue = sql<number>`coalesce(${messages.styleStroke}, 2)`;
   const styleKeyLabel = sql<string>`${styleBackgroundValue} || '|' || ${styleColorValue} || '|' || cast(${styleStrokeValue} as text)`;
 
+  const monthlyKey = sql<string>`strftime('%Y-%m', ${createdAtEpoch}, 'unixepoch')`;
+
   const [
     totalMessagesResult,
     messagesLast6MonthsResult,
     viewsLast6MonthsResult,
     monthlyActivity,
+    monthlyMessages,
     messagesByVersion,
     messagesByLanguage,
     languageByYear,
@@ -75,6 +79,14 @@ async function getStats(): Promise<StatsData> {
       .from(messages)
       .groupBy(yearValue)
       .orderBy(asc(yearValue)),
+    db
+      .select({
+        key: monthlyKey,
+        total: count(),
+      })
+      .from(messages)
+      .groupBy(monthlyKey)
+      .orderBy(asc(monthlyKey)),
     db
       .select({
         key: sql<string>`${messages.version}`,
@@ -238,6 +250,7 @@ async function getStats(): Promise<StatsData> {
     viewsLast6Months: viewsLast6MonthsResult[0]?.total ?? 0,
     totalViews: totalViewsResult[0]?.total ?? 0,
     messagesByMonth: monthlyActivity as MonthStats[],
+    monthlyMessages: monthlyMessages as GroupedCount[],
     messagesByVersion: messagesByVersion as GroupedCount[],
     messagesByLanguage: messagesByLanguage as GroupedCount[],
     messagesByWeekday: messagesByWeekday as GroupedCount[],
@@ -278,6 +291,12 @@ export default async function StatsPage() {
     key,
     total: weekdayMap.get(key) ?? 0,
   }));
+
+  let cumulative = 0;
+  const cumulativeMonthly = stats.monthlyMessages.map((item) => {
+    cumulative += item.total;
+    return { key: item.key, cumulative };
+  });
 
   const maxYearCount = Math.max(
     ...stats.messagesByMonth.map((i) => i.total),
@@ -324,6 +343,13 @@ export default async function StatsPage() {
               height="h-120"
               caption="Messages per year"
               labelClassName="px-4 py-2 flex flex-col font-size-6 relative z-10"
+            />
+          )}
+          {cumulativeMonthly.length > 0 && (
+            <CumulativeLineChart
+              items={cumulativeMonthly}
+              height="h-120"
+              caption="Cumulative messages all time"
             />
           )}
           {process.env.NODE_ENV === 'development' &&

@@ -1,5 +1,7 @@
 export { BarChart } from './BarChart';
 export type { BarChartItem } from './BarChart';
+export { CumulativeLineChart } from './CumulativeLineChart';
+export type { CumulativeLineChartItem } from './CumulativeLineChart';
 export { SegmentBar } from './SegmentBar';
 export type { SegmentBarItem } from './SegmentBar';
 export { StackedColumnChart } from './StackedColumnChart';
