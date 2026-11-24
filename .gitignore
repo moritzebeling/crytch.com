@@ -1,1 +1,6 @@
 /.DS_Store
+/crytch.sql
+/crytch.sqlite3
+/crytch.sqlite3-journal
+/crytch.sqlite3-wal
+/crytch.sqlite3-shm

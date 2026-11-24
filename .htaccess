@@ -3,6 +3,10 @@ DirectoryIndex index.php
 
 Options -Indexes
 
+<FilesMatch "(?i)^crytch\.(sql|sqlite3(-journal|-wal|-shm)?)$">
+	Require all denied
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
 	RewriteEngine on
 	RewriteBase /
