@@ -31,6 +31,9 @@ include 'ui/header.php';
 		$blogentries = scandir($blogdirectory, 1);
 
 		foreach ($blogentries as $post) {
+			if(pathinfo($post, PATHINFO_EXTENSION) !== 'php' || !is_file($blogdirectory.$post)){
+				continue;
+			}
 			$date = str_replace('.php','',$post);
 			$date_arr = explode('-', $post);
 			include $blogdirectory.$post;

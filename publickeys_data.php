@@ -11,7 +11,6 @@ $open = $DATA->query($find);
 $all_messages = [];
 $i = 0;
 while($row = $open->fetch()) {
-	$settings = json_decode( $row['settings'], true );
 	$message = json_encode($row['message'],JSON_NUMERIC_CHECK);
 	$message = trim($message,'"');
 	// $message = str_replace("\"", "-", $message);

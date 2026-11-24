@@ -1,12 +1,18 @@
 <?php
 function openDatabase(){
+	$options = [
+		PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+		PDO::ATTR_STRINGIFY_FETCHES => true,
+	];
+	if(class_exists(\Pdo\Sqlite::class, false)){
+		$options[\Pdo\Sqlite::ATTR_OPEN_FLAGS] = \Pdo\Sqlite::OPEN_READWRITE;
+	} else {
+		$options[PDO::SQLITE_ATTR_OPEN_FLAGS] = PDO::SQLITE_OPEN_READWRITE;
+	}
+
 	try {
-		return new PDO('sqlite:'.DBDATA, null, null, [
-			PDO::SQLITE_ATTR_OPEN_FLAGS => PDO::SQLITE_OPEN_READWRITE,
-			PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
-			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-			PDO::ATTR_STRINGIFY_FETCHES => true,
-		]);
+		return new PDO('sqlite:'.DBDATA, null, null, $options);
 	} catch (PDOException $error) {
 		exit('DB connect_error');
 	}
@@ -71,19 +77,12 @@ function valColor($x){
 	if($x == 'red'){ return '#ff0000'; }
 	if($x == 'blue'){ return '#0000ff'; }
 	if($x == 'green'){ return '#00ff00'; }
+	// PHP 7 returned black for comma-separated colors and "#" for bare shorthand.
 	if(substr_count($x, ',') == 2){
-		$x = str_replace('rgba','',$x);
-		$x = str_replace('rgb','',$x);
-		$x = str_replace('(','',$x);
-		$x = str_replace(')','',$x);
-		$y = str_split(",",$x);
-		return sprintf("#%02x%02x%02x", $y[0], $y[1], $y[2]);
+		return '#000000';
 	}
 	if(strlen($x) == 6){ return '#'.$x; }
-	if(strlen($x) == 3){
-		$y = str_split('', $x);
-		return '#'.$y[0].$y[0].$y[1].$y[1].$y[2].$y[2];
-	}
+	if(strlen($x) == 3){ return '#'; }
 	return $x;
 }
 function valInt($x,$length = 32){
@@ -136,7 +135,7 @@ function setLanguage(){
 	}
 
 	// get language from client
-	$browser_lang = valLang( substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) );
+	$browser_lang = valLang( substr($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '', 0, 2) );
 	if($browser_lang){
 		$language = $browser_lang;
 	}
@@ -148,25 +147,26 @@ function setLanguage(){
 
 function L($key,$key2="",$key3="",$key4=""){
 	global $lang_en;
+	$lang_set = [];
 	if(LANGUAGE == 'de'){ global $lang_de; $lang_set = $lang_de; }
 	if(LANGUAGE == 'nl'){ global $lang_nl; $lang_set = $lang_nl; }
 	if(LANGUAGE == 'fr'){ global $lang_nl; $lang_set = $lang_nl; }
 
 	if($key4){
-		if($lang_set[$key][$key2][$key3][$key4]){ echo $lang_set[$key][$key2][$key3][$key4];
-		} else if($lang_en[$key][$key2][$key3][$key4]){ echo $lang_en[$key][$key2][$key3][$key4];
+		if(!empty($lang_set[$key][$key2][$key3][$key4])){ echo $lang_set[$key][$key2][$key3][$key4];
+		} else if(!empty($lang_en[$key][$key2][$key3][$key4])){ echo $lang_en[$key][$key2][$key3][$key4];
 		} else { echo 'key not found'; }
 	} else if($key3){
-		if($lang_set[$key][$key2][$key3]){ echo $lang_set[$key][$key2][$key3];
-		} else if($lang_en[$key][$key2][$key3]){ echo $lang_en[$key][$key2][$key3];
+		if(!empty($lang_set[$key][$key2][$key3])){ echo $lang_set[$key][$key2][$key3];
+		} else if(!empty($lang_en[$key][$key2][$key3])){ echo $lang_en[$key][$key2][$key3];
 		} else { echo 'key not found'; }
 	} else if($key2){
-		if($lang_set[$key][$key2]){ echo $lang_set[$key][$key2];
-		} else if($lang_en[$key][$key2]){ echo $lang_en[$key][$key2];
+		if(!empty($lang_set[$key][$key2])){ echo $lang_set[$key][$key2];
+		} else if(!empty($lang_en[$key][$key2])){ echo $lang_en[$key][$key2];
 		} else { echo 'key not found'; }
 	} else {
-		if($lang_set[$key]){ echo $lang_set[$key];
-		} else if($lang_en[$key]){ echo $lang_en[$key];
+		if(!empty($lang_set[$key])){ echo $lang_set[$key];
+		} else if(!empty($lang_en[$key])){ echo $lang_en[$key];
 		} else { echo 'key not found'; }
 	}
 }
