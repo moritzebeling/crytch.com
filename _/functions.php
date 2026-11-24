@@ -1,4 +1,17 @@
 <?php
+function openDatabase(){
+	try {
+		return new PDO('sqlite:'.DBDATA, null, null, [
+			PDO::SQLITE_ATTR_OPEN_FLAGS => PDO::SQLITE_OPEN_READWRITE,
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
+			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+			PDO::ATTR_STRINGIFY_FETCHES => true,
+		]);
+	} catch (PDOException $error) {
+		exit('DB connect_error');
+	}
+}
+
 // make embedding external resources easier
 function embedresource($res,$min=0){
 	if($res == 'jquery' ){ echo "<script defer src=\"https://code.jquery.com/jquery-3.2.1.min.js\" integrity=\"sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=\" crossorigin=\"anonymous\"></script>"; }

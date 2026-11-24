@@ -3,16 +3,14 @@ if(!isset($config)){
 	require_once('_config.php');
 }
 
-$DATA = new mysqli(DBHOST,DBUSER,DBPASS,DBDATA);
-if($DATA->connect_error){ throwError('DB connect_error'); }
-if(!$DATA->set_charset("utf8")){ throwError('no UTF-8'); }
+$DATA = openDatabase();
 
 $find = "SELECT * FROM Messages WHERE public_key IS NOT NULL ORDER BY created DESC"; 
 $open = $DATA->query($find);
 
 $all_messages = [];
 $i = 0;
-while($row = $open->fetch_assoc()) {
+while($row = $open->fetch()) {
 	$settings = json_decode( $row['settings'], true );
 	$message = json_encode($row['message'],JSON_NUMERIC_CHECK);
 	$message = trim($message,'"');
@@ -32,7 +30,6 @@ while($row = $open->fetch_assoc()) {
 	$i++;
 }
 
-$DATA->close();
 
 
 $json = json_encode($all_messages,JSON_NUMERIC_CHECK);

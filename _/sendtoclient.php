@@ -12,9 +12,7 @@ function throwError($incident){
 	exit;
 }
 
-$DATA = new mysqli(DBHOST,DBUSER,DBPASS,DBDATA);
-if($DATA->connect_error){ throwError('DB connect_error'); }
-if(!$DATA->set_charset("utf8")){ throwError('no UTF-8'); }
+$DATA = openDatabase();
 
 
 $in = array(
@@ -34,17 +32,16 @@ if(isset($_POST['messageurl'])){
 
 
 
-$update = "UPDATE Messages SET client_sendto = '".$in['client_sendto']."' WHERE client = '".CLIENT."' AND url = '".$in['url']."' ";
+// Keep the legacy query here. Its client and url columns are absent from the source schema.
+$update = $DATA->prepare('UPDATE Messages SET client_sendto = ? WHERE client = ? AND url = ?');
 
-
-if ($DATA->query($update) === true) {
+if ($update && $update->execute([$in['client_sendto'], CLIENT, $in['url']])) {
 	$return["status"] = "success";
 	$return["url"] = URL_MESSAGE.$in["url"];
 } else {
 	$return["status"] = "error";
 	$return["report"] = "DB insert failed";
 }
-$DATA->close();
 
 echo "[";
 echo json_encode($return);

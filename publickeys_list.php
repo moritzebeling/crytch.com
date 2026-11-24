@@ -3,9 +3,7 @@ if(!isset($config)){
 	require_once('_config.php');
 }
 
-$DATA = new mysqli(DBHOST,DBUSER,DBPASS,DBDATA);
-if($DATA->connect_error){ throwError('DB connect_error'); }
-if(!$DATA->set_charset("utf8")){ throwError('no UTF-8'); }
+$DATA = openDatabase();
 
 $find = "SELECT created, public_key, message_url FROM Messages WHERE public_key IS NOT NULL ORDER BY created DESC"; 
 $open = $DATA->query($find);
@@ -28,7 +26,7 @@ include 'ui/header.php';
 		<table>
 <?php
 		
-while($row = $open->fetch_assoc()) {
+while($row = $open->fetch()) {
 	echo "<tr>";
 
 		echo "<td>";

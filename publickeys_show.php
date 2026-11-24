@@ -12,41 +12,40 @@ if(isset($_GET['messageid'])){
 }
 
 
-$DATA = new mysqli(DBHOST,DBUSER,DBPASS,DBDATA);
-if($DATA->connect_error){ throwError('DB connect_error'); }
-if(!$DATA->set_charset("utf8")){ throwError('no UTF-8'); }
+$DATA = openDatabase();
 
 
-$find = "SELECT * FROM Messages WHERE message_url = '".$openmessage."' "; 
-$open = $DATA->query($find);
+$open = $DATA->prepare('SELECT * FROM Messages WHERE message_url = ? LIMIT 2');
+$rows = $open && $open->execute([$openmessage]) ? $open->fetchAll() : [];
 
-if ($open->num_rows == 1) {
-    while($row = $open->fetch_assoc()) {
-    	$found = array(
-			'client_id' => $row["client"],
-			'client_sendto' => $row["client_sendto"],
-			'grid_size' => $row["grid_size"],
-			'grid_height' => $row["grid_height"],
-			'grid_width' => $row["grid_width"],
-			'style_color' => $row["style_color"],
-			'style_background' => $row["style_background"],
-			'style_stroke' => $row["style_stroke"],
-			'window_width' => $row["window_width"],
-			'window_height' => $row["window_height"],
-			'message' => $row["message"],
-			'version' => $row["version"]
-    	);
-    }
+if (count($rows) == 1) {
+    $row = $rows[0];
+    $found = array(
+		'client_id' => $row["client"] ?? null,
+		'client_sendto' => $row["client_sendto"],
+		'grid_size' => $row["grid_size"],
+		'grid_height' => $row["grid_height"],
+		'grid_width' => $row["grid_width"],
+		'style_color' => $row["style_color"],
+		'style_background' => $row["style_background"],
+		'style_stroke' => $row["style_stroke"],
+		'window_width' => $row["window_width"],
+		'window_height' => $row["window_height"],
+		'message' => $row["message"],
+		'version' => $row["version"]
+    );
     if($found['client_sendto'] == CLIENT && $found['client_id'] == CLIENTOTHER){
-    	$DATA->query("UPDATE Messages SET opened = opened + 1, readbyreciever = readbyreciever + 1, recievernotified = recievernotified + 1 WHERE message_url = '".$openmessage."' ");
+        $update = $DATA->prepare('UPDATE Messages SET opened = opened + 1, readbyreciever = readbyreciever + 1, recievernotified = recievernotified + 1 WHERE message_url = ?');
     } else {
-    	$DATA->query("UPDATE Messages SET opened = opened + 1 WHERE message_url = '".$openmessage."' ");
+        $update = $DATA->prepare('UPDATE Messages SET opened = opened + 1 WHERE message_url = ?');
+    }
+    if($update){
+        $update->execute([$openmessage]);
     }
 } else {
     header("Location: ".BASEURL);
 	exit;
 }
-$DATA->close();
 
 
 

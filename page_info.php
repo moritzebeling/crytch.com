@@ -4,26 +4,11 @@ if(!isset($config)){
 	require_once('_config.php');
 }
 
-$DATA = new mysqli(DBHOST,DBUSER,DBPASS,DBDATA);
-
-/* check connection */
-if (mysqli_connect_errno()) {
-    printf("Connect failed: %s\n", mysqli_connect_error());
-    exit();
+$DATA = openDatabase();
+$result = $DATA->query("SELECT COUNT(*) FROM Messages");
+if ($result) {
+    $countMessages = $result->fetchColumn();
 }
-
-if ($result = $DATA->query("SELECT * FROM Messages")) {
-
-    /* determine number of rows result set */
-    $countMessages = $result->num_rows;
-
-    /* close result set */
-    $result->close();
-}
-
-/* close connection */
-$DATA->close();
-
 
 include 'ui/header.php';
 ?>

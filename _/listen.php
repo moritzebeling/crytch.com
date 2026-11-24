@@ -12,9 +12,7 @@ function throwError($incident){
 	exit;
 }
 
-$DATA = new mysqli(DBHOST,DBUSER,DBPASS,DBDATA);
-if($DATA->connect_error){ throwError('DB connect_error'); }
-if(!$DATA->set_charset("utf8")){ throwError('no UTF-8'); }
+$DATA = openDatabase();
 
 
 if(LISTEN != 1){ throwError('LISTEN not activated'); }
@@ -24,25 +22,24 @@ if(!CLIENTOTHERNAME){ throwError('CLIENTOTHERNAME undefined'); }
 
 
 
-$find = "SELECT url FROM Messages WHERE client = '".CLIENTOTHER."' AND client_sendto = '".CLIENT."' AND readbyreciever = 0 AND recievernotified = 0 ";
+// Keep the legacy query here. Its client and url columns are absent from the source schema.
+$open = $DATA->prepare('SELECT url FROM Messages WHERE client = ? AND client_sendto = ? AND readbyreciever = 0 AND recievernotified = 0');
 
-$open = $DATA->query($find);
-
-if ($open->num_rows > 0) {
-	$i = 0;
-    while($row = $open->fetch_assoc()){
-    	$return[$i] = URL_MESSAGE.$row["url"];
-    	$i++;
+if ($open && $open->execute([CLIENTOTHER, CLIENT]) && ($rows = $open->fetchAll())) {
+    foreach($rows as $i => $row){
+        $return[$i] = URL_MESSAGE.$row["url"];
     }
-    $return['num'] = $i;
+    $return["num"] = count($rows);
 
-    $DATA->query("UPDATE Messages SET recievernotified = recievernotified + 1 WHERE url = '".$return[$return['num']-1]."' ");
+    $update = $DATA->prepare('UPDATE Messages SET recievernotified = recievernotified + 1 WHERE url = ?');
+    if($update){
+        $update->execute([$return[$return["num"]-1]]);
+    }
     $return["status"] = "success";
 } else {
 	$return["status"] = "alone";
     exit;
 }
-$DATA->close();
 
 
 

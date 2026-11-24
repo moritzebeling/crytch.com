@@ -18,12 +18,7 @@ define('URL_ABOUT',BASEURL.'/about');
 define('URL_NEW',BASEURL.'/new');
 define('URL_BLOG',BASEURL.'/blog');
 
-// D A T A B A S E
-// VERSION: 5.6.19
-define('DBHOST','localhost');
-define('DBUSER','crytch');
-define('DBPASS','wfX&$cXh9qAy*&Y5');
-define('DBDATA','crytch');
+define('DBDATA', __DIR__.'/crytch.sqlite3');
 
 $defaults = array(
 	'gridsize' => 10,

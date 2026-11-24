@@ -3,9 +3,7 @@ if(!isset($config)){
 	require_once('../_config.php');
 }
 
-$DATA = new mysqli(DBHOST,DBUSER,DBPASS,DBDATA);
-if($DATA->connect_error){ throwError('DB connect_error'); }
-if(!$DATA->set_charset("utf8")){ throwError('no UTF-8'); }
+$DATA = openDatabase();
 
 $return["report"] = '';
 
@@ -86,33 +84,18 @@ if($in['settings']){
 
 
 
-$insert = "INSERT INTO Messages (";
-foreach ($in as $key => $value) {
-	if($value){
-		$insert .= " ".$key.",";
-	}
-}
-$insert = trim($insert,',');
-$insert .= " ) VALUES (";
-foreach ($in as $key => $value) {
-	if($value){
-		$insert .= " '".$value."',";
-	}
-}
-$insert = trim($insert,',');
-$insert .= " )";
+$fields = array_filter($in);
+$columns = implode(', ', array_keys($fields));
+$placeholders = implode(', ', array_fill(0, count($fields), '?'));
+$insert = $DATA->prepare("INSERT INTO Messages ($columns) VALUES ($placeholders)");
 
-
-
-if ($DATA->query($insert) === true) {
+if ($insert && $insert->execute(array_values($fields))) {
 	$return["status"] = "success";
 	$return["url"] = URL_MESSAGE.$in["message_url"];
 	$return['color'] = $in['style_background'];
 } else {
 	$return["status"] = "error";
-	// $return["report"] .= $DATA->error;
 }
-$DATA->close();
 
 echo "[";
 echo json_encode($return,JSON_NUMERIC_CHECK);

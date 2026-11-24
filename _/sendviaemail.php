@@ -16,9 +16,7 @@ function throwError($incident){
 
 
 
-$DATA = new mysqli(DBHOST,DBUSER,DBPASS,DBDATA);
-if($DATA->connect_error){ throwError('DB connect_error'); }
-if(!$DATA->set_charset("utf8")){ throwError('no UTF-8'); }
+$DATA = openDatabase();
 
 
 $in = array(
@@ -42,24 +40,15 @@ if(isset($_POST['sendtoemail'])){
 
 
 
-$insert = "INSERT INTO SentViaMail (
-      client,
-      msgurl,
-      email
-   ) VALUES (
-      '".$in["client"]."',
-      '".$in["msgurl"]."',
-      '".$in["email"]."'
-   )";
+$insert = $DATA->prepare('INSERT INTO SentViaMail (client, msgurl, email) VALUES (?, ?, ?)');
 
-if ($DATA->query($insert) === TRUE) {
+if ($insert && $insert->execute([$in['client'], $in['msgurl'], $in['email']])) {
 	$return["status"] = "success";
 	$return["url"] = $in["msgurl"];
 } else {
 	$return["status"] = "error";
 	$return["report"] = "DB insert failed";
 }
-$DATA->close();
 
 
 
