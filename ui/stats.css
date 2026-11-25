@@ -1,0 +1,280 @@
+body.stats {
+    background: #fff;
+    color: #000;
+    font-family: "Roboto Mono", monospace;
+}
+
+.stats *,
+.stats *::before,
+.stats *::after {
+    box-sizing: border-box;
+}
+
+.stats header h2 {
+    margin-bottom: 24px;
+}
+
+.stats main {
+    padding: 19.5px;
+}
+
+body.stats section {
+    margin: 0;
+}
+
+body.stats section + section {
+    margin-top: 52px;
+}
+
+.stats section > * + * {
+    margin-top: 26px;
+}
+
+body.stats section h2 {
+    font-size: 16.25px;
+    line-height: 22.75px;
+}
+
+body.stats figure,
+.stats-numbers {
+    border: 1px solid;
+}
+
+body.stats figure {
+    margin: 26px 0 0;
+}
+
+body.stats figcaption,
+.stats-label,
+.stats-numbers > div,
+.stats-ranking li {
+    padding: 6.5px 13px;
+}
+
+body.stats figcaption {
+    border-top: 1px solid;
+}
+
+.stats-numbers {
+    display: flex;
+}
+
+.stats-numbers > div {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.stats-numbers > div + div {
+    border-left: 1px solid;
+}
+
+.stats-numbers dd {
+    order: -1;
+    margin-bottom: 78px;
+    font-size: 29.25px;
+    line-height: 32.5px;
+    overflow-wrap: anywhere;
+}
+
+.stats-scroll {
+    overflow-x: auto;
+}
+
+.stats-bars,
+.stats-segments,
+.stats-stacks {
+    display: flex;
+}
+
+.stats-bars li,
+.stats-segments li,
+.stats-stacks ul {
+    position: relative;
+    min-width: 16px;
+    border-right: 1px solid;
+}
+
+.stats-bars li:last-child,
+.stats-segments li:last-child,
+.stats-stacks ul:last-child {
+    border-right: 0;
+}
+
+.stats-bars li,
+.stats-stacks ul {
+    flex: 1;
+}
+
+.stats-bars li {
+    min-width: 0;
+}
+
+.stats-tall,
+.stats-annual {
+    height: 390px;
+}
+
+.stats-annual,
+.stats-stacks {
+    min-width: 680px;
+}
+
+.stats-weekdays,
+.stats-hours {
+    height: 234px;
+}
+
+.stats-weekdays {
+    min-width: 440px;
+}
+
+.stats-hours {
+    min-width: 768px;
+}
+
+.stats-hours .stats-label {
+    padding-inline: 2px;
+    text-align: center;
+}
+
+.stats-fill {
+    position: absolute;
+    inset: auto 0 0;
+    background: rgb(0 0 0 / 5%);
+    border-top: 1px solid;
+}
+
+.stats-fill[style="height:100.0%"] {
+    border-top: 0;
+}
+
+.stats-label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.stats-line {
+    display: block;
+    width: 100%;
+    overflow: visible;
+}
+
+.stats-segments li {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.stats-segments li:hover,
+.stats-segments li:focus {
+    min-width: 80px;
+}
+
+.stats-widths li:hover,
+.stats-widths li:focus {
+    min-width: 100px;
+}
+
+.stats-stacks ul {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.stats-stacks li {
+    min-height: 16px;
+    overflow: hidden;
+}
+
+.stats-stacks li + li {
+    border-top: 1px solid;
+}
+
+.stats-stacks li:hover,
+.stats-stacks li:focus {
+    min-height: 60px;
+}
+
+.stats-segments li:focus-visible,
+.stats-stacks li:focus-visible {
+    outline: 2px solid;
+    outline-offset: -2px;
+}
+
+.stats-strokes {
+    min-width: 440px;
+    height: 136.5px;
+}
+
+.stats-stroke {
+    position: absolute;
+    inset: 50% 0 auto;
+    transform: translateY(-50%);
+    background: #000;
+}
+
+body.stats .stats-ranking figcaption,
+body.stats .stats-swatches figcaption {
+    border-top: 0;
+    border-bottom: 1px solid;
+}
+
+.stats-ranking li {
+    display: flex;
+    gap: 26px;
+}
+
+.stats-ranking li + li {
+    border-top: 1px solid;
+}
+
+.stats-ranking li > :first-child {
+    width: 64px;
+}
+
+.stats-swatches ul {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: #000;
+}
+
+.stats-swatches li {
+    position: relative;
+    aspect-ratio: 1;
+    background: #fff;
+}
+
+.stats-swatches svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.stats footer {
+    font-size: 11.375px;
+}
+
+.stats-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    body.stats header h2 {
+        font-size: 16px;
+    }
+
+    .stats main {
+        padding-inline: 16px;
+    }
+}

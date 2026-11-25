@@ -18,6 +18,7 @@ Options -Indexes
 	RewriteRule ^about$ page_about.php
 	RewriteRule ^blog$ 	page_blog.php
 	RewriteRule ^info$ 	page_info.php
+	RewriteRule ^stats/?$ page_stats.php [L]
 	RewriteRule ^new$ 	tool_new.php
 	RewriteRule ^publickeys$ 	publickeys_show.php
 	RewriteRule ^m/([A-Za-z0-9-]+)/?$ tool_open.php?messageid=$1 [NC,L]

@@ -2,13 +2,19 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title><?php echo PAGETITLE; ?></title>
+	<title><?php echo htmlspecialchars($pageTitle ?? PAGETITLE, ENT_QUOTES, 'UTF-8'); ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="This is an example of a meta description. This will often show up in search results.">
+	<meta name="description" content="<?php echo htmlspecialchars($pageDescription ?? 'This is an example of a meta description. This will often show up in search results.', ENT_QUOTES, 'UTF-8'); ?>">
 	<meta name="keywords" content="messaging security internet encryption design crypto">
 
-	<?php embedresource('roboto'); embedresource('jquery'); embedresource('paperjs'); ?>
-	<link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>/ui/style.css"  media="screen" >
+	<?php
+	embedresource('roboto');
+	if ($loadEditorScripts ?? true) {
+		embedresource('jquery');
+		embedresource('paperjs');
+	}
+	?>
+	<link rel="stylesheet" type="text/css" href="/ui/style.css" media="screen">
 
 	<meta property="og:title" content="<?php echo PAGETITLE; ?>" />
 	<meta property="og:url" content="<?php echo BASEURL; ?>" />

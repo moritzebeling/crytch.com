@@ -58,6 +58,8 @@ include 'ui/header.php';
 			<span class="break">und erschienen im <em>TDC&nbsp;Tokyo</em> Annual Book 2017.</span>
 			<span class="break">Ausgestellt auf dem <em>Spinnereirundgang</em> 2017 in Leipzig</span>
 			<span class="break">Teil des <em>Typodarium</em> 2018<br /></span></p>
+			<p>&nbsp;</p>
+			<p><a href="/stats">Stats</a></p>
 		</div>
 	</footer>
 </div>

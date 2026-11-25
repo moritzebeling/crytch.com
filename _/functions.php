@@ -1,19 +1,22 @@
 <?php
-function openDatabase(){
+function openDatabase(bool $readOnly = false){
 	$options = [
-		PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
+		PDO::ATTR_ERRMODE => $readOnly ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 		PDO::ATTR_STRINGIFY_FETCHES => true,
 	];
 	if(class_exists(\Pdo\Sqlite::class, false)){
-		$options[\Pdo\Sqlite::ATTR_OPEN_FLAGS] = \Pdo\Sqlite::OPEN_READWRITE;
+		$options[\Pdo\Sqlite::ATTR_OPEN_FLAGS] = $readOnly ? \Pdo\Sqlite::OPEN_READONLY : \Pdo\Sqlite::OPEN_READWRITE;
 	} else {
-		$options[PDO::SQLITE_ATTR_OPEN_FLAGS] = PDO::SQLITE_OPEN_READWRITE;
+		$options[PDO::SQLITE_ATTR_OPEN_FLAGS] = $readOnly ? PDO::SQLITE_OPEN_READONLY : PDO::SQLITE_OPEN_READWRITE;
 	}
 
 	try {
 		return new PDO('sqlite:'.DBDATA, null, null, $options);
 	} catch (PDOException $error) {
+		if ($readOnly) {
+			throw $error;
+		}
 		exit('DB connect_error');
 	}
 }
